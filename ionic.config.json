@@ -1,0 +1,7 @@
+{
+  "name": "appMovilFuneraria",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
