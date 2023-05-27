@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { MenuController, ModalController } from '@ionic/angular';
 import { LoginComponent } from '../login/login.component';
 import { CrearCuentaComponent } from '../crear-cuenta/crear-cuenta.component';
 
@@ -11,9 +11,15 @@ import { CrearCuentaComponent } from '../crear-cuenta/crear-cuenta.component';
 export class BienvenidoComponent implements OnInit {
   private modalAbierto = false;
 
-  constructor(public modalCtrl: ModalController) { }
+  constructor(
+    public modalCtrl: ModalController,
+    private menuController: MenuController,
 
-  ngOnInit() { }
+  ) { }
+
+  ngOnInit() { 
+    this.menuController.enable(false);
+  }
 
   async login() {
     if (!this.modalAbierto) {

@@ -1,0 +1,344 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button size="small" (click)="regresar()">
+        <ion-icon slot="icon-only" name="arrow-undo-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      Proceso de Afiliación
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="verificacionAfiliacion">
+    <form [formGroup]="formAfilicacion">
+      <ion-accordion-group [value]="['first']">
+        <ion-accordion value="first">
+          <ion-item slot="header">
+            <ion-label>Datos Personales</ion-label>
+          </ion-item>
+          <div class="ion-padding" slot="content">
+            <ion-grid>
+              <ion-row>
+                <ion-col size="12" size-sm="3">
+                  <ion-item>
+                    <ion-input type="hidden" formControlName="cliente_id"></ion-input>
+                    <ion-label position="floating">Cédula</ion-label>
+                    <ion-input type="text" maxlength="10" placeholder="Ingrese su cédula" formControlName="cedula"
+                      appCedula appSoloNumeros></ion-input>
+                    <ng-container *ngIf="formAfilicacion.get('cedula')?.touched">
+                      <ion-note slot="error" *ngIf="formAfilicacion.get('cedula')?.errors?.['required']">
+                        La cédula es requerido.
+                      </ion-note>
+                      <ion-note slot="error" *ngIf="formAfilicacion.get('cedula')?.errors?.['cedula']">
+                        Ingrese una cédula válida.
+                      </ion-note>
+                    </ng-container>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="12" size-sm="3">
+                  <ion-item>
+                    <ion-label position="floating">Correo</ion-label>
+                    <ion-input appEmailValidation type="email" placeholder="Ingrese su correo"
+                      formControlName="email"></ion-input>
+                    <ng-container *ngIf="formAfilicacion.get('email')?.touched">
+                      <ion-note slot="error" *ngIf="formAfilicacion.get('email')?.errors?.['required']">
+                        El correo es requerido.
+                      </ion-note>
+                      <ion-note slot="error"
+                        *ngIf="formAfilicacion.get('email')?.invalid && !formAfilicacion.get('email')?.errors?.['required']">
+                        El correo no es válido.
+                      </ion-note>
+                    </ng-container>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="12" size-sm="3">
+                  <ion-item>
+                    <ion-label position="floating">Nombre</ion-label>
+                    <ion-input type="text" placeholder="Ingrese su nombre" formControlName="nombres"
+                      appSoloLetras></ion-input>
+                    <ng-container *ngIf="formAfilicacion.get('nombres')?.touched">
+                      <ion-note slot="error" *ngIf="formAfilicacion.get('nombres')?.errors?.['required']">
+                        El nombre es requerido.
+                      </ion-note>
+                      <ion-note slot="error" *ngIf="formAfilicacion.controls['nombres']?.errors?.['minlength']">
+                        El nombre debe tener mínimo 3 caracteres.
+                      </ion-note>
+                    </ng-container>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="12" size-sm="3">
+                  <ion-item>
+                    <ion-label position="floating">Apellidos</ion-label>
+                    <ion-input type="text" placeholder="Ingrese su apellido" formControlName="apellidos"
+                      appSoloLetras></ion-input>
+                    <ng-container *ngIf="formAfilicacion.get('apellidos')?.touched">
+                      <ion-note slot="error" *ngIf="formAfilicacion.get('apellidos')?.errors?.['required']">
+                        El apellidos es requerido.
+                      </ion-note>
+                      <ion-note slot="error" *ngIf="formAfilicacion.controls['apellidos']?.errors?.['minlength']">
+                        El apellidos debe tener mínimo 3 caracteres.
+                      </ion-note>
+                    </ng-container>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="12" size-sm="3">
+                  <ion-item>
+                    <ion-label position="floating">Número Celular</ion-label>
+                    <ion-input type="text" maxlength="10" placeholder="Ingrese su número celular"
+                      formControlName="celular" appNumerosCelularEcuador appSoloNumeros></ion-input>
+                    <ng-container *ngIf="formAfilicacion.get('celular')?.touched">
+                      <ion-note slot="error" *ngIf="formAfilicacion.get('celular')?.errors?.['required']">
+                        El número celular es requerido.
+                      </ion-note>
+                      <ion-note slot="error" *ngIf="formAfilicacion.controls['celular']?.errors?.['minlength']">
+                        El número celular debe tener mínimo 10 caracteres.
+                      </ion-note>
+                      <ion-note slot="error"
+                        *ngIf="formAfilicacion.get('celular')?.errors?.['ecuadorianPhone'] && !formAfilicacion.controls['celular']?.errors?.['minlength']">
+                        El número de celular es inválido.
+                      </ion-note>
+                    </ng-container>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="12" size-sm="3">
+                  <ion-item>
+                    <ion-label position="floating">Dirección</ion-label>
+                    <ion-input type="text" placeholder="Ingrese su dirección" formControlName="direccion"
+                      appAlfaNumerico></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="12" size-sm="3">
+                  <ion-item>
+                    <ion-select label="Estado Civil" formControlName="estado_civil_id" label-placement="floating">
+                      <ion-select-option *ngFor="let esci of estadoCivil" [value]="esci.id">{{esci.status |
+                        titlecase}}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                  <div *ngIf="formAfilicacion.get('estado_civil_id')?.touched">
+                    <ion-note color="danger" slot="error"
+                      *ngIf="formAfilicacion.get('estado_civil_id')?.errors?.['required']">
+                      El estado civil es requerido.
+                    </ion-note>
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+        </ion-accordion>
+        <ion-accordion value="second">
+          <ion-item slot="header">
+            <ion-label>Contacto de Emergencia</ion-label>
+          </ion-item>
+          <div class="ion-padding" slot="content">
+            <ion-grid>
+              <ion-row>
+                <ion-col size="12" size-sm="3">
+                  <ion-item>
+                    <ion-select label="Parentesco" formControlName="parentesco_id" label-placement="floating">
+                      <ion-select-option *ngFor="let par of parentesco" [value]="par.id">{{ par.relacion | titlecase
+                        }}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                  <div *ngIf="formAfilicacion.get('parentesco_id')?.touched">
+                    <ion-note color="danger" slot="error"
+                      *ngIf="formAfilicacion.get('parentesco_id')?.errors?.['required']">
+                      El parentesco es requerido.
+                    </ion-note>
+                  </div>
+                </ion-col>
+                <ion-col size="12" size-sm="3">
+                  <ion-item>
+                    <ion-label position="floating">Nombre del Contacto</ion-label>
+
+                    <ion-input type="text" placeholder="Ingrese el nombre del contacto" formControlName="nombre"
+                      appSoloLetras></ion-input>
+                    <ng-container *ngIf="formAfilicacion.get('nombre')?.touched">
+                      <ion-note slot="error" *ngIf="formAfilicacion.get('nombre')?.errors?.['required']">
+                        El nombre del contacto es requerido.
+                      </ion-note>
+                      <ion-note slot="error" *ngIf="formAfilicacion.controls['nombre']?.errors?.['minlength']">
+                        El nombre del contacto debe tener mínimo 3 caracteres.
+                      </ion-note>
+                    </ng-container>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="12" size-sm="3">
+                  <ion-item>
+                    <ion-label position="floating">Número Celular</ion-label>
+                    <ion-input type="text" maxlength="10" placeholder="Número celular del contacto"
+                      formControlName="num_celular" appNumerosCelularEcuador appSoloNumeros></ion-input>
+                    <ng-container *ngIf="formAfilicacion.get('num_celular')?.touched">
+                      <ion-note slot="error" *ngIf="formAfilicacion.get('num_celular')?.errors?.['required']">
+                        El número celular del contacto es requerido.
+                      </ion-note>
+                      <ion-note slot="error" *ngIf="formAfilicacion.controls['num_celular']?.errors?.['minlength']">
+                        El número celular del contacto debe tener mínimo 10 caracteres.
+                      </ion-note>
+                      <ion-note slot="error"
+                        *ngIf="formAfilicacion.get('num_celular')?.errors?.['ecuadorianPhone'] && !formAfilicacion.controls['num_celular']?.errors?.['minlength']">
+                        El número de celular del contacto es inválido.
+                      </ion-note>
+                    </ng-container>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+        </ion-accordion>
+        <ion-accordion value="third">
+          <ion-item slot="header">
+            <ion-label>Servicios</ion-label>
+          </ion-item>
+          <div class="ion-padding" slot="content">
+            <ion-grid>
+              <ion-row>
+                <ion-col size="12" size-sm="3">
+                  <ion-item>
+                    <ion-select label="Servicio" formControlName="servicio_id" label-placement="floating">
+                      <ion-select-option *ngFor="let ser of servicioSoloPlan" [value]="ser.id">{{ ser.nombre | titlecase}}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                  <div *ngIf="formAfilicacion.get('servicio_id')?.touched">
+                    <ion-note color="danger" slot="error"
+                      *ngIf="formAfilicacion.get('servicio_id')?.errors?.['required']">
+                      El servicio es requerido.
+                    </ion-note>
+                  </div>
+                </ion-col>
+
+                
+                <ng-container *ngIf="formAfilicacion.get('servicio_id')?.value">
+                  <ion-col size="12" size-sm="3">
+                    <ion-list>
+                      <ion-item-group>
+                        <ion-item-divider class="ion-text-center">
+                          <strong style="color: black;">Descripción del plan</strong>
+                        </ion-item-divider>
+                    
+                        <ion-item *ngFor="let ld of servicioDescripcion">
+                          <ion-icon style="font-size: 15px;" name="chevron-forward-outline"></ion-icon>
+                          <ion-label>{{ ld }}</ion-label>
+                        </ion-item>
+                      </ion-item-group>
+                    </ion-list>
+                  </ion-col>
+                  
+
+                  <ion-col size="12" size-sm="3">
+                    <ion-item>
+                      <ion-label position="floating">Precio del servicio</ion-label>
+                      <ion-input readonly="true" type="text" formControlName="precio_servicio">$&nbsp;</ion-input>
+                    </ion-item>
+                  </ion-col>
+
+                  <ion-col size="12" size-sm="3">
+                    <ion-item>
+                      <ion-select label="Duración de meses" formControlName="duracion_mes_id"
+                        label-placement="floating">
+                        <ion-select-option *ngFor="let dm of duracionMes" [value]="dm.id">{{ dm.duracion }}
+                          Meses</ion-select-option>
+                      </ion-select>
+                    </ion-item>
+                    <div *ngIf="formAfilicacion.get('duracion_mes_id')?.touched">
+                      <ion-note color="danger" slot="error"
+                        *ngIf="formAfilicacion.get('duracion_mes_id')?.errors?.['required']">
+                        La duración del mes es requerida.
+                      </ion-note>
+                    </div>
+                  </ion-col>
+                </ng-container>
+
+
+                <ng-container *ngIf="formAfilicacion.get('duracion_mes_id')?.value">
+
+                  <ion-grid style="display: flex; justify-content: center;">
+                    <ion-row nowrap>
+                      <ion-col size="12">
+                        <ion-fab-button size="small" fab-fixed color="primary" (click)="addServicio()">
+                          <ion-icon name="add"></ion-icon>
+                        </ion-fab-button>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </ng-container>
+
+              </ion-row>
+            </ion-grid>
+
+
+            <div class="table">
+              <ng-container *ngIf="newDetalleServicio.length > 0; else NoData">
+                <div
+                  style="max-width: 800px;margin: auto;border: 1px solid #eee;box-shadow: 0 0 10px rgba(0, 0, 0, .15);font-size: 12px;line-height: 24px">
+                  <ion-grid>
+                    <ion-row style="width: 100%;line-height: inherit;text-align: left;">
+                      <ion-col class="ion-hide-md-down un_first centerCabecera">#</ion-col>
+                      <ion-col class="centerCabecera">Servicio</ion-col>
+                      <ion-col class="centerCabecera">Precio</ion-col>
+                      <ion-col class="centerCabecera">Duración</ion-col>
+                      <ion-col class="centerCabecera">C / M</ion-col>
+                      <ion-col class="centerCabecera">Accion</ion-col>
+                    </ion-row>
+
+                    <ion-row *ngFor="let item of newDetalleServicio; let i = index">
+                      <ion-col class="ion-hide-md-down un_first centerBody">{{ i + 1 }}</ion-col>
+                      <ion-col class="centerBody">{{ item.nombre_servicio | titlecase }}</ion-col>
+                      <ion-col class="centerBody" style="margin-top: 25px;">{{ item.precio_servicio | currency : "USD" :
+                        "symbol" }}</ion-col>
+                      <ion-col class="centerBody">{{ item.duracion }} Meses</ion-col>
+                      <ion-col class="centerBody" style="margin-top: 25px;">{{ item.costo | currency : "USD" : "symbol"
+                        }}</ion-col>
+                      <ion-col class="centerBody" style="margin-top: 25px;">
+                        <button ion-button icon-only class="btn_eye_icon" (click)="eliminarServicio(item)">
+                          <ion-icon name="trash-outline"></ion-icon>
+                        </button>
+                      </ion-col>
+                    </ion-row>
+
+                    <ion-row style="width: 100%;line-height: inherit;text-align: left;">
+                      <ion-col colspan="4" class="centerCabecera">Total</ion-col>
+                      <ion-col colspan="4" class="centerCabecera"></ion-col>
+                      <ion-col colspan="4" class="centerCabecera">{{ total | currency : "USD" : "symbol" }}</ion-col>
+
+                    </ion-row>
+                  </ion-grid>
+                </div>
+              </ng-container>
+              <ng-template #NoData>
+                <strong style="color:red">
+                  Seleccione al menos servicio para registrar la afiliación
+                </strong>
+              </ng-template>
+
+            </div>
+            <div class="ion-margin-top">
+              <ion-button expand="block" type="button" [disabled]="formAfilicacion.invalid"
+                (click)="saveAfiliacion()">Guardar Afilicación</ion-button>
+            </div>
+          </div>
+        </ion-accordion>
+      </ion-accordion-group>
+    </form>
+  </ng-container>
+
+  <ng-container *ngIf="!verificacionAfiliacion">
+		<div class="grid">
+			<div class="grid__content">
+				<div class="ion-text-center" *ngIf="!verificacionAfiliacion">
+          <ion-icon slot="icon-only" [color]="colorResp" [name]="iconoResp"></ion-icon>
+				</div>
+
+
+				<a>{{ mensajeVerificacion | uppercase }}</a>
+				
+			</div>
+		</div>
+
+		  
+	</ng-container>
+
+</ion-content>

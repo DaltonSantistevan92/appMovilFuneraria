@@ -1,0 +1,24 @@
+
+
+
+<div *ngIf="slides.length > 0">
+  <p>{{ selectedCategory }}</p>
+  <swiper-container
+    #swiper
+    (slidechange)="swiperSlideChanged($event)"
+    [modules]="swiperModules"
+    [slidesPerView]="1.2"
+    [initialSlide]="1"
+    [centeredSlides]="true"
+    [autoplay]="true"
+    [spaceBetween]="20"
+    [pagination]="{clickable:true, dynamicBullets: true}"
+    >
+    <swiper-slide *ngFor="let cat of slides">
+      <img [src]="cat.img" (click)="openCategoria(cat)" (load)="onLoad()" [ngStyle]="{ display : hasLoad ? '' : 'none'}">
+
+      <img *ngIf="!hasLoad" style="background-color: #007aff; margin-top: 3px;" src="assets/loader.svg" alt="hola" height="35" width="35">
+    </swiper-slide>
+  </swiper-container> 
+
+</div>

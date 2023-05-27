@@ -7,9 +7,11 @@
       Vidanova
     </ion-title>
     <ion-buttons slot="primary">
-      <ion-button size="small" >
+      <ion-button size="small" (click)="irDetalleCarrito()">
         <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
 			</ion-button>
+      <ion-badge *ngIf="totalQuantity" class="notifications-badge" slot="end">{{ totalQuantity }}</ion-badge>
+
 			<ion-button size="small" (click)="salir()">
         <ion-icon slot="icon-only" name="arrow-redo-outline"></ion-icon>
 			</ion-button>
@@ -18,5 +20,10 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <h1>home</h1>
+  
+  <app-banner [slides]="categorias"></app-banner>
+
+  <app-banner-plan [slides]="serCategoria"></app-banner-plan>
+
+
 </ion-content>

@@ -17,7 +17,8 @@ export class AuthService {
     return localStorage.getItem('tokenRip') || '';
   }
 
-  get tokenDecodificado(): IntPayload {
+  get tokenDecodificado(): IntPayload | null {
+    if (this.token == '') { return null; }
     return this.decodificar = decode(this.token);
   }
 
@@ -37,7 +38,7 @@ export class AuthService {
   }
 
   login(data: Formulario): Observable<RespLogin> {
-    const url = `${this.api}/login`;
+    const url = `${this.api}/loginMovil`;
     return this.http.post<RespLogin>(url, data).pipe(tap((resp) => {
       if (resp.token) {
         localStorage.setItem('tokenRip', resp.token);

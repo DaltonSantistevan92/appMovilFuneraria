@@ -10,17 +10,20 @@ import { IonicModule } from '@ionic/angular';
 import { EmailValidationDirective } from '../directives/email-validation.directive';
 
 
+
 @NgModule({
   declarations: [
     LoginComponent,
     CrearCuentaComponent,
     BienvenidoComponent,
-    EmailValidationDirective
+    EmailValidationDirective,
+    
   ],
   exports:[
     LoginComponent,
     CrearCuentaComponent,
-    BienvenidoComponent
+    BienvenidoComponent,
+    EmailValidationDirective
   ],
   imports: [
     CommonModule,

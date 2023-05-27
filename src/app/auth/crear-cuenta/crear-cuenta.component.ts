@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoadingController, ModalController } from '@ionic/angular';
+import { LoadingController, MenuController, ModalController } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { AlertService } from '../../services/alert.service';
@@ -24,11 +24,14 @@ export class CrearCuentaComponent  implements OnInit {
     private _as: AuthService,
     private router : Router,
     private _ats : AlertService,
+    private menuController: MenuController,
+
    
   ) { }
 
   ngOnInit() {
-   this.initForm();
+    this.menuController.enable(false);
+    this.initForm();
   }
 
   initForm(){

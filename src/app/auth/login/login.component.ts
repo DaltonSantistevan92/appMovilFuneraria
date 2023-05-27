@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoadingController, ModalController } from '@ionic/angular';
+import { LoadingController, MenuController, ModalController } from '@ionic/angular';
 import { Formulario } from '../interfaces/auth.interface';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
@@ -21,11 +21,14 @@ export class LoginComponent  implements OnInit {
     private loadingController: LoadingController,
     private _as: AuthService,
     private router : Router,
-    private _ats : AlertService
+    private _ats : AlertService,
+    private menuController: MenuController,
+
 
   ) { }
 
   ngOnInit() {
+    this.menuController.enable(false);
     this.initForm();
   }
 

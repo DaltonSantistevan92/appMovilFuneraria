@@ -28,6 +28,37 @@
 /* Theme variables */
 @import "./theme/variables.scss";
 
+@import "swiper/scss";
+@import 'swiper/css/bundle';
+@import "swiper/scss/navigation";
+@import "swiper/scss/pagination";
+
+@font-face {
+    font-family: 'Plex';
+    font-style: normal;
+    font-weight: normal;
+    src: url('/assets/fonts/IBMPlexSans-Regular.ttf');
+}
+
+
+@font-face {
+    font-family: 'Plex';
+    font-weight: bold;
+    src: url('/assets/fonts/IBMPlexSans-Bold.ttf');
+}
+
+:root {
+    --ion-text-color : #828585;
+    --ion-font-family : 'Plex';
+}
+
+.cart-modal {
+    --height: 50%;
+    --border-radius: 10px;
+    padding: 25px;
+}
+
+
 
 .ion-color-white {
     --ion-color-base: var(--ion-color-white);

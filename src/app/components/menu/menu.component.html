@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Hola! {{ nombre  | titlecase }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<div style="height: auto;">
+  <ion-list id="inbox-list">
+  
+    <ion-menu-toggle auto-hide="false" *ngFor="let menu of menus; let i = index">
+      <ion-item routerDirection="root" [routerLink]="[menu.url]" lines="none" detail="false">
+        <ion-icon slot="start" [ios]="menu.icono" [name]="menu.icono"></ion-icon>
+        <ion-label>{{ menu.nombre | titlecase }}</ion-label>
+      </ion-item>
+    </ion-menu-toggle>
+  </ion-list>
+</div>
+      
+
+  
