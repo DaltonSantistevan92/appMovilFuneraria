@@ -45,9 +45,9 @@ export class AfiliateService {
     return this.http.get<IntDurMes>(url);
   }
 
-  verificacionAfiliacion(cliente_id: number): Observable<{afiliado: boolean,message: string, icono: string, color : string}> {
+  verificacionAfiliacion(cliente_id: number): Observable<{afiliado: boolean; message: string; icono: string; color : string}> {
     const url = `${this.api}/verificacionAfiliacion/${cliente_id}`;
-    return this.http.get<{afiliado: boolean,message: string, icono: string, color : string}>(url);
+    return this.http.get<{afiliado: boolean; message: string; icono: string; color : string}>(url);
   }
 
   saveAfiliacion(data: AfiliacionData): Observable<RespLogin> {

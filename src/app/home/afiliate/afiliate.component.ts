@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { User } from 'src/app/auth/interfaces/auth.interface';
@@ -18,7 +18,7 @@ import { AfiliacionData, TableServicios } from './interfaces/afiliacion.interfac
   templateUrl: './afiliate.component.html',
   styleUrls: ['./afiliate.component.scss'],
 })
-export class AfiliateComponent implements OnInit {
+export class AfiliateComponent implements OnInit, AfterContentInit {
 
   dataCliente!: User;
   formAfilicacion!: FormGroup;
@@ -37,7 +37,7 @@ export class AfiliateComponent implements OnInit {
   verificacionAfiliacion: boolean = false;
   mensajeVerificacion: string = '';
 
-  cliente_idGlobal: number = 0;
+  //cliente_idGlobal: number = 0;
 
   servicioDescripcion: string[] = [];
 
@@ -56,16 +56,28 @@ export class AfiliateComponent implements OnInit {
 
   ngOnInit() {
     this.formInit();
-    this.setAfiliacion();
-    //si el cliente ya tiene una afilicacion
-    this.cliente_idGlobal = this.formAfilicacion.get('cliente_id')?.value;
-    this.verificacionClienteAfilicacion(this.cliente_idGlobal);
+    //this.setAfiliacion(); 
   }
 
-  verificacionClienteAfilicacion(cliente_idGlobal: number) {
+  ionViewDidEnter() {
+    this.formInit();
+    this.setAfiliacion();
+
+    this.verificacionClienteAfilicacion();
+
+    this.changePrecioServicioPlanCostoMensual();
+  }
+  
+  /* ngAfterViewInit(): void {
+    this.verificacionClienteAfilicacion();
+  } */
+
+  verificacionClienteAfilicacion() {
+    const cliente_idGlobal = this.formAfilicacion.get('cliente_id')?.value;
+
     this._afi.verificacionAfiliacion(cliente_idGlobal).subscribe({
       next: (resp) => {
-        if (resp.afiliado === false) {
+        if (resp.afiliado === false) {//no tiene afiliacion
           this.verificacionAfiliacion = true;
           this.mensajeVerificacion = resp.message;
           this.iconoResp = resp.icono;
@@ -74,7 +86,7 @@ export class AfiliateComponent implements OnInit {
           this.mostrarParentesco();
           this.mostrarServicioSoloPlan();
           this.mostrarDuracionMes();
-        } else {
+        } else {//si tiene afilicacion
           this.iconoResp = resp.icono;
           this.colorResp = resp.color;
           this.verificacionAfiliacion = false;
@@ -120,15 +132,27 @@ export class AfiliateComponent implements OnInit {
   setAfiliacion() {
     if (this._as.tokenDecodificado != null) {
       this.dataCliente = this._as.tokenDecodificado.user;
+      
+      const { email, persona: { cedula, nombres, apellidos, celular, direccion, cliente } } = this.dataCliente;
+      let cliente_id = null;
 
-      const { email, persona: { nombres, cliente } } = this.dataCliente;
+      if (cliente && cliente.length > 0) {
+        cliente_id = cliente[0].id;
+      }
 
-      let { id: cliente_id } = cliente![0];
-
-      let data = { nombres, email, cliente_id };
+      let data = { 
+        cedula : cedula ?? '', 
+        nombres : nombres ?? '',
+        apellidos : apellidos ?? '', 
+        celular : celular ?? '', 
+        direccion : direccion ?? '', 
+        email, 
+        cliente_id 
+      };
 
       this.formAfilicacion.patchValue(data);
     }
+
   }
 
   mostrarEstadoCivil() {
@@ -161,6 +185,8 @@ export class AfiliateComponent implements OnInit {
 
   changePrecioServicioPlanCostoMensual() {
     this.formAfilicacion.get('servicio_id')?.valueChanges.subscribe(servicioId => {
+      console.log('servicio_id',servicioId);
+      
       const precio = this.getPrecioServicio(servicioId);
       const nombreServicio = this.getNombreServicio(servicioId);
 
@@ -301,7 +327,9 @@ export class AfiliateComponent implements OnInit {
       next: (resp) => {
         if (resp.status) {
           this._ats.toastAlert(resp.message);
-          this.verificacionClienteAfilicacion(data.cliente.cliente_id);
+          this.verificacionClienteAfilicacion();
+          this.newDetalleServicio = [];
+          this.total = 0;
         } else {
           this._ats.toastAlertDanger(resp.message);
         }
