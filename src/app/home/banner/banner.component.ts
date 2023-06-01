@@ -4,6 +4,9 @@ import { SwiperOptions } from 'swiper';
 import { Categoria } from '../interfaces/categoria-producto.interface';
 import { CategoriasService } from '../services/categorias.service';
 import { Router } from '@angular/router';
+import { GeneralService } from '../../services/general.service';
+import { ReceptorService } from '../services/receptor.service';
+
 
 
 @Component({
@@ -22,26 +25,36 @@ export class BannerComponent  implements OnInit {
 
   constructor(
     private _cs : CategoriasService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private _gs : GeneralService,
+    private _r: ReceptorService
+
+  ) {
+
+   }
 
   ngOnInit() {
-   
-    
-  }
-
-  ngAfterViewInit(): void {//
-    this._cs.$getObjSourceCategoria.subscribe( (resp) => {
+    this._cs.$getObjSourceCategoria.subscribe((resp) => {
       if (resp.length > 0) {
         this.selectedCategory = resp[0].nombre_categoria;
       }
-    }); 
+    });
+
+  }
+  
+  ionViewDidEnter() {
+  }
+  
+  ngAfterViewInit(): void {
+  }
+
+
+  verimg(folder: string, image: string): string {
+    return this._gs.verImagen(folder, image);
   }
 
   onLoad(){
-    setTimeout( () => {
-      this.hasLoad = true;
-    },1000)
+    setTimeout( () => { this.hasLoad = true; },1000);
   }
 
   swiperSlideChanged(e: any){
@@ -51,8 +64,11 @@ export class BannerComponent  implements OnInit {
   }
 
   openCategoria(categoria : Categoria){
-    this.router.navigate(['home/categoria'], { state: { categoria: categoria } });
+    this._r.setData(categoria,'categoria');
+    this.router.navigate(['home/categoria']);
   }
+
+
 
   
 

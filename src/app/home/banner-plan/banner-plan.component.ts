@@ -3,6 +3,8 @@ import { IonicSlides } from '@ionic/core';
 import { CategoriasService } from '../services/categorias.service';
 import { Router } from '@angular/router';
 import { Categoria, Servicio } from '../interfaces/categoria-producto.interface';
+import { GeneralService } from 'src/app/services/general.service';
+import { ReceptorService } from '../services/receptor.service';
 
 @Component({
   selector: 'app-banner-plan',
@@ -20,17 +22,24 @@ export class BannerPlanComponent  implements OnInit {
   
   constructor(
     private _cs : CategoriasService,
-    private router: Router
+    private router: Router,
+    private _gs : GeneralService,
+    private _r: ReceptorService
   ) { }
 
-  ngOnInit() {}
-
-  ngAfterViewInit(): void {//
+  ngOnInit() {
     this._cs.$getObjSourceCategoriaServicio.subscribe( (resp) => { 
       if (resp.length > 0) {
         this.selectedCategory = resp[0].nombre_categoria;
       }
     }); 
+  }
+
+  ngAfterViewInit(): void {//
+  }
+
+  verimg(folder: string, image: string): string {
+    return this._gs.verImagen(folder, image);
   }
 
   swiperSlideChanged(e: any){
@@ -39,14 +48,12 @@ export class BannerPlanComponent  implements OnInit {
   }
 
   onLoad(){
-    setTimeout( () => {
-      this.hasLoad = true;
-    },1000)
+    setTimeout( () => { this.hasLoad = true; },1000);
   }
 
-
   openCategoriaServicio(categoria: Categoria){
-    this.router.navigate(['home/categoria'], { state: { categoria: categoria } });
+    this._r.setData(categoria,'categoria');
+    this.router.navigate(['home/categoria']);
   }
 
 

@@ -54,6 +54,8 @@ export class HomePage implements OnInit,  AfterContentChecked {
     this.getCategoryProduc();//
     this.getCategoryServic();
     this.cantidad();
+
+    
   }
 
   ngAfterContentChecked() {
@@ -62,15 +64,14 @@ export class HomePage implements OnInit,  AfterContentChecked {
     };
   }
 
-  
-
   getCategoryProduc(){//
     this._cs.getCategoriaProducto().subscribe({
-      next : (resp) => { this.categorias = resp.data; },
+      next : (resp) => { 
+        this.categorias = resp.data;
+      },
       error : (err) => { console.log(err); }
     });
   }
-
 
   getCategoryServic(){
     this._cs.getCategoriaServicio().subscribe({
@@ -78,8 +79,6 @@ export class HomePage implements OnInit,  AfterContentChecked {
       error : (err) => { console.log(err); }
     });
   }
-
-  
 
   salir() {
     localStorage.removeItem('tokenRip');

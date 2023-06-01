@@ -5,6 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CartService } from '../services/cart.service';
 import { ModalController } from '@ionic/angular';
 import { DetalleComponent } from '../detalle/detalle.component';
+import { GeneralService } from 'src/app/services/general.service';
+import { ReceptorService } from '../services/receptor.service';
 
 @Component({
   selector: 'app-categoria-producto',
@@ -20,49 +22,38 @@ export class CategoriaProductoComponent implements OnInit {
 
   totalQuantity: number = 0;
 
-
-
-  // @Input() item! : Producto;
-
   constructor(
     private router: Router,
     private _cartSer: CartService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private _gs : GeneralService,
+    private _r: ReceptorService
   ) { }
 
   ngOnInit() {
-    this.getCard();
+    this.getDatos();
     this.cantidad();
-
   }
 
-  getCard() {
-    const navigation = this.router.getCurrentNavigation();
+  getDatos(){
+    this._r.getData('categoria').subscribe(data => { 
+      this.nombreCategoria = data.nombre_categoria;
 
-    if (navigation && navigation.extras && navigation.extras.state) {
-      const categoriaData = navigation.extras.state['categoria'];
-
-      this.categoria = categoriaData;
-      this.nombreCategoria = categoriaData.nombre_categoria;
-
-      if (categoriaData.servicios != undefined) {
+      if (data.producto!) {
+        this.productos = data.producto!;
+      } else {
         // Modificar la descripción y almacenarla en un array separado
-        const modifiedResponseCategoryServicioPlan = categoriaData.servicios.map((plan: any) => ({ ...plan, descripcion: plan.descripcion.split(",") }));
-        const nuevosServicios = modifiedResponseCategoryServicioPlan;
-        this.servicios = nuevosServicios;
+        this.servicios = data.servicios!.map((plan: any) => ({ ...plan, descripcion: plan.descripcion.split(",") }));
       }
-
-      if (categoriaData.producto != undefined) {
-        const nuevosProductos = categoriaData.producto;
-        this.productos = nuevosProductos;
-      }
-
-    }
-
+    });
   }
 
   cantidad() {
     this._cartSer.currentDataCart$.subscribe(x => this.totalQuantity = x.length);
+  }
+
+  verimg(folder: string, image: string): string {
+    return this._gs.verImagen(folder, image);
   }
 
 
@@ -73,8 +64,6 @@ export class CategoriaProductoComponent implements OnInit {
 
   addToCartServicio(servi: any) {
     console.log(servi);
-
-
   }
 
   regresar() {

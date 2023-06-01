@@ -18,7 +18,7 @@
     [pagination]="{clickable:true, dynamicBullets: true}"
     >
     <swiper-slide *ngFor="let cat of slides">
-      <img [src]="cat.img" (click)="openCategoriaServicio(cat)" (load)="onLoad()" [ngStyle]="{ display : hasLoad ? '' : 'none'}">
+      <img [src]="verimg('categorias', cat.img)" (click)="openCategoriaServicio(cat)" (load)="onLoad()" [ngStyle]="{ display : hasLoad ? '' : 'none'}">
 
       <img *ngIf="!hasLoad" style="background-color: #007aff; margin-top: 3px;" src="assets/loader.svg" alt="hola" height="35" width="35">
     </swiper-slide>

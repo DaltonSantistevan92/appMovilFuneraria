@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CartService } from '../services/cart.service';
 import { Producto } from '../interfaces/categoria-producto.interface';
 import { ModalController } from '@ionic/angular';
+import { GeneralService } from 'src/app/services/general.service';
 
 @Component({
   selector: 'app-detalle',
@@ -16,7 +17,9 @@ export class DetalleComponent  implements OnInit {
 
   constructor(
     private _cartSer : CartService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private _gs : GeneralService
+
 
   ) { }
 
@@ -50,6 +53,10 @@ export class DetalleComponent  implements OnInit {
   close(): void {
 		this.modalCtrl.dismiss();
 	}
+
+  verimg(folder: string, image: string): string {
+    return this._gs.verImagen(folder, image);
+  }
   
 
 }
