@@ -53,7 +53,7 @@ export class AfiliateComponent implements OnInit, AfterContentInit {
     private _gs: GeneralService
 
   ) { }
-
+ 
   ngOnInit() {
     this.formInit();
     //this.setAfiliacion(); 
