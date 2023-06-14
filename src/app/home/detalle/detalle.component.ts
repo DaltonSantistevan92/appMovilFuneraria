@@ -3,6 +3,7 @@ import { CartService } from '../services/cart.service';
 import { Producto } from '../interfaces/categoria-producto.interface';
 import { ModalController } from '@ionic/angular';
 import { GeneralService } from 'src/app/services/general.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-detalle',
@@ -18,7 +19,8 @@ export class DetalleComponent  implements OnInit {
   constructor(
     private _cartSer : CartService,
     private modalCtrl: ModalController,
-    private _gs : GeneralService
+    private _gs : GeneralService,
+    private router :Router
 
 
   ) { }
@@ -29,11 +31,11 @@ export class DetalleComponent  implements OnInit {
   }
 
   getCarritoDetalle(){
-    this._cartSer.currentDataCart$.subscribe( listProd => { this.productos = listProd; console.log('mis lista detalle', this.productos) });
+    this._cartSer.currentDataCart$.subscribe( listProd => { this.productos = listProd; });
   }
 
   totalGeneral(){
-    this._cartSer.totalGeneralPrice$.subscribe( totalGeneral => {  this.totalGeneralPrice = totalGeneral; console.log('total general', this.totalGeneralPrice) });
+    this._cartSer.totalGeneralPrice$.subscribe( totalGeneral => {  this.totalGeneralPrice = totalGeneral; });
   }
 
   removeProduct(producto:Producto){
@@ -56,6 +58,15 @@ export class DetalleComponent  implements OnInit {
 
   verimg(folder: string, image: string): string {
     return this._gs.verImagen(folder, image);
+  }
+
+  verificar(){
+    this.router.navigate(['home/verificar']);
+    this.modalCtrl.dismiss();
+
+    console.log('producto',this.productos);
+    console.log('total',this.totalGeneralPrice);
+    
   }
   
 

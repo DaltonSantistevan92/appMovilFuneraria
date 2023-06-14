@@ -5,6 +5,7 @@ import { AuthGuard } from '../auth/guards/auth.guard';
 import { CategoriaProductoComponent } from './categoria-producto/categoria-producto.component';
 import { DetalleComponent } from './detalle/detalle.component';
 import { AfiliateComponent } from './afiliate/afiliate.component';
+import { VerificarComponent } from './verificar/verificar.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,7 @@ const routes: Routes = [
   },
   { path : 'categoria', component : CategoriaProductoComponent,  canActivate : [AuthGuard]},
   { path : 'detalle', component : DetalleComponent,  canActivate : [AuthGuard]},
+  { path : 'verificar', component : VerificarComponent,  canActivate : [AuthGuard]},
   { path : 'afiliate', component : AfiliateComponent,  canActivate : [AuthGuard]}
 
 
