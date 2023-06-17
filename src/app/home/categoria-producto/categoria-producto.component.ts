@@ -56,14 +56,9 @@ export class CategoriaProductoComponent implements OnInit {
     return this._gs.verImagen(folder, image);
   }
 
-
-  addToCart(product: Producto) {
-    const productoModificado: Producto = { ...product, quantity: 1 };
+  addToCart(product: Producto | Servicio) {//producto o servicio
+    const productoModificado: Producto | Servicio = { ...product, quantity: 1 };
     this._cartSer.cargarCart(productoModificado);
-  }
-
-  addToCartServicio(servi: any) {
-    console.log(servi);
   }
 
   regresar() {

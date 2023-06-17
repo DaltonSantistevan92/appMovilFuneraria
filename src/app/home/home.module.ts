@@ -20,6 +20,7 @@ import { SoloNumerosDirective } from '../directives/solo-numeros.directive';
 import { NumerosCelularEcuadorDirective } from '../directives/numeros-celular-ecuador.directive';
 import { SoloLetrasDirective } from '../directives/solo-letras.directive';
 import { AlfaNumericoDirective } from '../directives/alfa-numerico.directive';
+import { VerificarComponent } from './verificar/verificar.component';
 
 
 
@@ -41,6 +42,7 @@ import { AlfaNumericoDirective } from '../directives/alfa-numerico.directive';
     DetalleComponent, 
     AfiliateComponent,
     BannerPlanComponent,
+    VerificarComponent,
     CedulaDirective,
     SoloNumerosDirective,
     NumerosCelularEcuadorDirective,

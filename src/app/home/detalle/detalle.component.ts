@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CartService } from '../services/cart.service';
-import { Producto } from '../interfaces/categoria-producto.interface';
+import { CartService, DetalleVentaProductoOrServicio } from '../services/cart.service';
 import { ModalController } from '@ionic/angular';
 import { GeneralService } from 'src/app/services/general.service';
 import { Router } from '@angular/router';
@@ -11,8 +10,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./detalle.component.scss'],
 })
 export class DetalleComponent  implements OnInit {
+  productos: DetalleVentaProductoOrServicio [] = [];
 
-  productos: Producto [] = [];
+  iva:number = 0;
+  subTotal:number = 0;
   totalGeneralPrice:number = 0;
 
 
@@ -27,28 +28,30 @@ export class DetalleComponent  implements OnInit {
 
   ngOnInit() {
     this.getCarritoDetalle();
-    this.totalGeneral();
+    this.totalIvaSubTotal();
   }
 
   getCarritoDetalle(){
     this._cartSer.currentDataCart$.subscribe( listProd => { this.productos = listProd; });
   }
 
-  totalGeneral(){
+  totalIvaSubTotal(){
+    this._cartSer.subtotal$.subscribe(subtotal => {  this.subTotal = subtotal; });
+    this._cartSer.iva$.subscribe(iva => {  this.iva = iva; });
     this._cartSer.totalGeneralPrice$.subscribe( totalGeneral => {  this.totalGeneralPrice = totalGeneral; });
   }
 
-  removeProduct(producto:Producto){
-    this._cartSer.removeElementCart(producto);
+  removeProduct(detalle: DetalleVentaProductoOrServicio ) {
+    this._cartSer.removeElementCart(detalle);
   }
 
-  aumentar(producto: Producto){
-    this._cartSer.aumentarCantidad(producto);
+  aumentar(detalle: DetalleVentaProductoOrServicio){
+    this._cartSer.aumentarCantidad(detalle);
   }
 
-  disminuir(producto: Producto){
-    if (producto.quantity! !== 1) {
-      this._cartSer.disminuirCantidad(producto);
+  disminuir(detalle: DetalleVentaProductoOrServicio){
+    if (detalle.quantity! !== 1) {
+      this._cartSer.disminuirCantidad(detalle);
     }
   }
 
@@ -61,12 +64,8 @@ export class DetalleComponent  implements OnInit {
   }
 
   verificar(){
+    this.modalCtrl.dismiss();    
     this.router.navigate(['home/verificar']);
-    this.modalCtrl.dismiss();
-
-    console.log('producto',this.productos);
-    console.log('total',this.totalGeneralPrice);
-    
   }
   
 

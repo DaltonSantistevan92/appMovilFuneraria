@@ -39,4 +39,5 @@ export interface Servicio {
   precio: number;
   imagen: string;
   estado: string;
+  quantity?:number;
 }

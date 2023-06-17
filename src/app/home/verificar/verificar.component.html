@@ -1,3 +1,229 @@
-<p>
-  verificar works!
-</p>
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button size="small" (click)="regresar()">
+        <ion-icon slot="icon-only" name="arrow-undo-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title style="font-size: 14px;">
+      Verificación de Productos o Servicios
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card class="no-radius" no-margin>
+    <ion-card-content>
+
+      <div class="ccFlags">
+        <ion-row>
+          <ion-col size="6">
+            <ion-label>Datos Personales</ion-label>
+          </ion-col>
+          <ion-col size="6">
+            <div class="ion-text-center">
+              <ion-chip style="margin-top: -4px;" (click)="obtenerUbicacion()" *ngIf="!ubicacion">
+                <ion-icon name="location-outline" color="primary"></ion-icon>
+                <ion-label>Mi Ubicación</ion-label>
+              </ion-chip>
+            </div>
+          </ion-col>
+
+        </ion-row>
+
+        <form [formGroup]="formVenta" >
+          <ion-grid no-padding>
+            <ion-row>
+              <ion-col>
+                <ion-item lines="none">
+                  <ion-thumbnail slot="start">
+                    <img style="width: 60px; border-radius: 20px;" src="/assets/img/cliente.png">
+                  </ion-thumbnail>
+
+                  <ion-item>
+                    <ion-input type="hidden" formControlName="cliente_id"></ion-input>
+                    <ion-label position="floating">Cliente</ion-label>
+                    <ion-input type="text"> {{ this.formVenta.get('nombreCompletoCliente')?.value | titlecase}}
+                    </ion-input>
+                  </ion-item>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col size="6">
+                <ion-item *ngIf="ubicacion">
+                  <ion-input type="text" label="Provincia" labelPlacement="stacked" formControlName="provincia"
+                    readonly></ion-input>
+                </ion-item>
+                <small *ngIf="formVenta.get('provincia')?.dirty || formVenta.get('provincia')?.touched">
+                  <ion-note color="danger" slot="error" *ngIf="formVenta.get('provincia')?.errors?.['required']">
+                    La provincia es requerida.
+                  </ion-note>
+                </small>
+              </ion-col>
+
+              <ion-col size="6">
+                <ion-item *ngIf="ubicacion">
+                  <ion-input type="text" label="Cantón" labelPlacement="stacked" formControlName="canton"
+                    readonly></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col size="12">
+                <ion-item *ngIf="ubicacion">
+                  <ion-input type="text" label="Parroquia" labelPlacement="stacked" formControlName="parroquia"
+                    readonly></ion-input>
+                </ion-item>
+                <small *ngIf="formVenta.get('parroquia')?.dirty || formVenta.get('parroquia')?.touched">
+                  <ion-note color="danger" slot="error" *ngIf="formVenta.get('parroquia')?.errors?.['required']">
+                    La parroquia es requerida.
+                  </ion-note>
+                </small>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col size="12">
+                <ion-item *ngIf="ubicacion">
+                  <ion-input style="font-size: 11px;" type="text" label="Ubicacion" labelPlacement="stacked"
+                    formControlName="coordenadas" readonly></ion-input>
+                </ion-item>
+
+                <ion-item *ngIf="skeleton">
+                  <ion-label class="prompt-text" position="floating">
+                    <ion-skeleton-text [animated]="true" style="width: 100%"></ion-skeleton-text>
+                  </ion-label><br />
+                  <ion-input class="prompt-text" type="text" readonly>
+                    <ion-skeleton-text [animated]="true" style="width: 100%"></ion-skeleton-text>
+                  </ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col size="12">
+                <div [style.display]="ubicacion ? 'block' : 'none'" #mapContainer class="map-container"></div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+          <ion-label>Detalle del pedido</ion-label>
+          <ion-grid class="mt-2" padding>
+
+            <div class="table">
+              <ng-container *ngIf="productos.length > 0; else NoData">
+                <div
+                  style="max-width: 800px;margin: auto;border: 1px solid #eee;box-shadow: 0 0 10px rgba(0, 0, 0, .15);font-size: 12px;line-height: 24px">
+                  <ion-grid>
+                    <ion-row style="width: 100%;line-height: inherit;text-align: left;">
+                      <ion-col class="centerCabecera">Imagen</ion-col>
+                      <ion-col class="centerCabecera">Nombre</ion-col>
+                      <ion-col class="centerCabecera">Cantidad</ion-col>
+                      <ion-col class="centerCabecera">Precio</ion-col>
+                      <ion-col class="centerCabecera">Subtotal</ion-col>
+                    </ion-row>
+
+                    <ion-row *ngFor="let d of productos; let i = index">
+                      <ng-container *ngIf="d.producto">
+                        <img [src]="verimg('productos', d.producto.imagen)" alt="{{ d.producto.nombre }}" width="50px"
+                          height="50px" style="border-radius: 3px; margin-top: 10px;">
+                      </ng-container>
+                      <ng-container *ngIf="d.servicio">
+                        <img [src]="verimg('servicios', d.servicio.imagen)" alt="{{ d.servicio.nombre }}" width="50px"
+                          height="50px" style="border-radius: 3px; margin-top: 10px;">
+                      </ng-container>
+
+                      <ng-container *ngIf="d.producto">
+                        <ion-col class="centerBody">{{ d.producto.nombre | titlecase }}</ion-col>
+                      </ng-container>
+
+                      <ng-container *ngIf="d.servicio">
+                        <ion-col class="centerBody">{{ d.servicio.nombre | titlecase }}</ion-col>
+                      </ng-container>
+
+                      <ion-col class="centerBody" style="margin-top: 25px;">{{ d.quantity! !== 0 ? d.quantity! : 1
+                        }}</ion-col>
+
+                      <ng-container *ngIf="d.producto">
+                        <ion-col class="centerBody" style="margin-top: 25px;">
+                          {{ d.producto.precio_venta | currency : "USD" : "symbol" }}
+                        </ion-col>
+                      </ng-container>
+
+                      <ng-container *ngIf="d.servicio">
+                        <ion-col class="centerBody" style="margin-top: 25px;">
+                          {{ d.servicio.precio | currency : "USD" : "symbol" }}
+                        </ion-col>
+                      </ng-container>
+
+                      <ng-container *ngIf="d.producto">
+                        <ion-col class="centerBody" style="margin-top: 25px;">
+                          {{ (d.quantity! * d.producto.precio_venta) | currency : "USD" : "symbol" }}
+                        </ion-col>
+                      </ng-container>
+
+                      <ng-container *ngIf="d.servicio">
+                        <ion-col class="centerBody" style="margin-top: 25px;">
+                          {{ (d.quantity! * d.servicio.precio) | currency : "USD" : "symbol" }}
+                        </ion-col>
+                      </ng-container>
+
+
+                    </ion-row>
+
+                    <ion-row style="width: 100%;line-height: inherit;text-align: left;">
+                      <ion-col colspan="4" class="centerCabecera">Subtotal</ion-col>
+                      <ion-col colspan="4" class="centerCabecera"></ion-col>
+                      <ion-col colspan="4" class="centerCabecera">{{ subTotal | currency : "USD" : "symbol" }}</ion-col>
+                    </ion-row>
+
+                    <ion-row style="width: 100%;line-height: inherit;text-align: left;">
+                      <ion-col colspan="4" class="centerCabecera">Iva (12%)</ion-col>
+                      <ion-col colspan="4" class="centerCabecera"></ion-col>
+                      <ion-col colspan="4" class="centerCabecera">{{ iva | currency : "USD" : "symbol" }}</ion-col>
+                    </ion-row>
+
+                    <ion-row style="width: 100%;line-height: inherit;text-align: left;">
+                      <ion-col colspan="4" class="centerCabecera">Total</ion-col>
+                      <ion-col colspan="4" class="centerCabecera"></ion-col>
+                      <ion-col colspan="4" class="centerCabecera">{{ totalGeneralPrice | currency : "USD" : "symbol"
+                        }}</ion-col>
+
+                    </ion-row>
+                  </ion-grid>
+                </div>
+              </ng-container>
+              <ng-template #NoData>
+                <strong style="color:red">
+                  Seleccione al menos un producto o servicio para realizar la venta.
+                </strong>
+              </ng-template>
+
+            </div>
+          </ion-grid>
+
+          <ion-row>
+            <ion-col size="12" class="ion-text-center">
+              <ion-button expand="block" color="dark" routerLink="/home"> Seguir
+                <ion-icon slot="end" name="cart"></ion-icon>
+              </ion-button>
+              <ion-button type="button" expand="block" color="primary" [disabled]="formVenta.invalid"
+                (click)="savePedido()"> Guardar Pedido
+                <ion-icon slot="end" name="save"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </form>
+      </div>
+
+    </ion-card-content>
+  </ion-card>
+
+
+
+
+
+</ion-content>
