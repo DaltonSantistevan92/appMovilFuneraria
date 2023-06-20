@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { CartService, DetalleVentaProductoOrServicio } from '../services/cart.service';
 import { Producto } from '../interfaces/categoria-producto.interface';
 import { NavigationExtras, Router } from '@angular/router';
@@ -11,8 +11,32 @@ import { User } from 'src/app/auth/interfaces/auth.interface';
 import { MapService } from '../services/map.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { GeneralService } from 'src/app/services/general.service';
-import { Geolocation, Position } from '@capacitor/geolocation';
-declare var google: any;
+import { DOCUMENT } from '@angular/common';
+import { Position } from '@capacitor/geolocation';
+
+interface DetalleVenta {
+  producto_id: number | null;
+  servicio_id: number | null;
+  cantidad: number | null;
+  precio: number | null;
+  total: number | null;
+}
+
+interface Venta {
+  cliente_id: number;
+  subtotal: number;
+  iva: number;
+  total: number;
+}
+
+interface VentaUbicacion {
+  //provincia_id: number;
+  provincia: string;
+  canton: string;
+  parroquia: string;
+  latitud: number;
+  longitud: number;
+}
 
 
 @Component({
@@ -23,6 +47,7 @@ declare var google: any;
 export class VerificarComponent implements OnInit, AfterViewInit {
   productos: DetalleVentaProductoOrServicio[] = [];
 
+  ivaNumberText: number = 0;
   iva: number = 0;
   subTotal: number = 0;
   totalGeneralPrice: number = 0;
@@ -34,15 +59,12 @@ export class VerificarComponent implements OnInit, AfterViewInit {
   ubicacion: boolean = false;
   mostrarMapa: boolean = true;
 
-  empresaLat: number = -2.1596032;
-  empresaLng: number = -79.8957842;
   @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef;
 
-  detalle_venta = new FormControl();
-  newDetalle: any[] = [];
-
   ubicacionActual!: { provincia: string, canton: string, parroquia: string }
-  provincias : Provincia [] = [];
+
+
+  detalle_venta: any[] = [];
 
   constructor(
     private _cartSer: CartService,
@@ -53,6 +75,8 @@ export class VerificarComponent implements OnInit, AfterViewInit {
     private mapService: MapService,
     private _ats: AlertService,
     private _gs: GeneralService,
+    private renderer: Renderer2,
+    @Inject(DOCUMENT) private document: any,
 
   ) { }
 
@@ -61,21 +85,77 @@ export class VerificarComponent implements OnInit, AfterViewInit {
     this.setCliente();
     this.getCarritoDetalle();
     this.totalGeneral();
-    this.getProvincias();
+    this.pintarNumerIva();
+    console.log('ngOnInit');
 
-    this.mapService.getUbicacionObservable().subscribe(ubicacion => {
-      // Actualizar tu formulario reactivo con la ubicación actual
-      this.formVenta.patchValue({ provincia: ubicacion.provincia, canton: ubicacion.canton, parroquia: ubicacion.parroquia });
+    this.mapService.coordenadas$.subscribe(coord => {
+      //console.log('nueva coordenada', coord);
+      if (coord.lat == 0 && coord.lng == 0) { return }
+
+      this.formVenta.patchValue({ coordenadas: `Lat: ${coord.lat} Lon: ${coord.lng}`, latitud: coord.lat, longitud: coord.lng });
+    })
+
+    this.mapService.getUbicacionObservable().subscribe(newUbicacion => {
+      //console.log('nueva ubicacion', newUbicacion);
+      if (newUbicacion.provincia === '' && newUbicacion.canton === '' && newUbicacion.parroquia === '') { return }
+
+      this.formVenta.patchValue({ provincia: newUbicacion.provincia, canton: newUbicacion.canton, parroquia: newUbicacion.parroquia });
     });
+
+
+    this.mapService.mapLoaded$.subscribe(verificando => {
+      console.log('verificando mapLoaded', verificando);
+      if (verificando) {
+         this.formVenta.patchValue({ provincia: '', canton: '', parroquia: '', coordenadas:'', latitud: '', longitud: '' });
+      }
+      
+    })
+
   }
 
   ngAfterViewInit() {
-
+    //console.log('ngAfterViewInit');
   }
 
   ionViewWillEnter() {
+    console.log('ionViewWillEnter');
+
     this.getCarritoDetalle();
     this.totalGeneral();
+    this.pintarNumerIva();
+
+    this.mapService.loadGoogleMaps().subscribe({
+      next: (res) => {
+        // La API de Google Maps se ha cargado exitosamente
+        //console.log('loadGoogleMaps', res);
+        if (this.mapContainer) {
+          const mapElement = this.mapContainer.nativeElement;
+          this.mapService.initializeMap(mapElement);
+
+          const form = this.formVenta.value;
+
+          if (form.latitud == '', form.longitud === '') {
+            this.ubicacion = true;  //se activa el btn capturar ubicación
+            return;
+          } else {
+            this.ubicacion = false;  //se oculta el btn capturar ubicación
+
+            // Pintar el marcador de tu ubicación
+            this.mapService.addMarker(form.latitud, form.longitud, 'Mi ubicación', true);
+
+            // Pintar la ruta desde tu empresa hacia la ubicación del cliente
+            this.mapService.drawRoute(this.mapService.empresaLat, this.mapService.empresaLng, form.latitud, form.longitud);
+          }
+
+        } else {
+          console.error('mapContainer is undefined');
+        }
+      },
+      error: (err) => {
+        console.error('Error loading Google Maps:', err);
+      }
+    });
+
   }
 
   initForm() {
@@ -88,65 +168,39 @@ export class VerificarComponent implements OnInit, AfterViewInit {
       latitud: [''],
       longitud: [''],
       coordenadas: [''],
-      //detalle_venta: this.fb.array([], [Validators.required])
-      //provincia_id: ['', [Validators.required]],
-      //canton_id: ['', [Validators.required]],
-      //parroquia_id: ['', [Validators.required]],
     });
   }
 
-  obtenerUbicacion() {
-    this.loadMap();
+  async obtenerUbicacion() {
+    const posicion = await this.mapService.getCurrentPosition();
+
+    if (posicion) {
+      const { latitude, longitude } = posicion.coords;
+
+      this.formVenta.patchValue({ coordenadas: `Lat: ${latitude} Lon: ${longitude}`, latitud: latitude, longitud: longitude });
+
+      const ubicacionAuto = await this.mapService.getProvinciaCantonParroquia(latitude, longitude);
+
+      if (ubicacionAuto) {
+        //aqui voy a sacar el precio de envio para cd provincia
+        //const prov = this.provincias.find(p => p.provincia === ubicacionAuto.provincia);
+
+        this.formVenta.patchValue({ provincia: ubicacionAuto.provincia, canton: ubicacionAuto.canton, parroquia: ubicacionAuto.parroquia });
+
+        // Pintar el marcador de tu ubicación
+        this.mapService.addMarker(latitude, longitude, 'Mi ubicación', true);
+
+        // Pintar la ruta desde tu empresa hacia la ubicación del cliente
+        this.mapService.drawRoute(this.mapService.empresaLat, this.mapService.empresaLng, latitude, longitude);
+        this.ubicacion = false;  //se oculta el btn capturar ubicación
+      } else {
+        console.error('Error al obtener la ubicación ');
+      }
+
+    }
+
   }
 
-
-  loadMap(): void {
-    const mapElement = this.mapContainer.nativeElement;
-    
-    this.mapService.getCurrentPosition()
-      .then(position => {
-        const { latitude, longitude } = position.coords;
-  
-        this.skeleton = true;
-        this.ubicacion = true;
-  
-        this.formVenta.get('coordenadas')?.setValue(`Lat: ${latitude} Lon: ${longitude}`);
-        this.formVenta.patchValue({ latitud: latitude, longitud: longitude });
-  
-        this.skeleton = false;
-  
-        this.mapService.loadMap(mapElement, latitude, longitude)
-          .then(() => {
-            this.mapService.getProvinciaCantonParroquia(latitude, longitude)
-              .then(ubicacion => {
-                console.log('Ubicación automática de Google Maps:', ubicacion);
-                this.formVenta.patchValue({ provincia: ubicacion.provincia, canton: ubicacion.canton, parroquia: ubicacion.parroquia });
-
-                const prov = this.provincias.find(p => p.provincia === ubicacion.provincia);
-                //aqui voy a sacar el precio de envio de cd provinicia
-                console.log(prov);
-                
-                // Pintar el marcador de tu empresa (reemplaza las coordenadas con las de tu empresa)
-                this.mapService.addMarker(this.empresaLat, this.empresaLng, 'Mi empresa');
-  
-                // Pintar el marcador de tu ubicación
-                this.mapService.addMarker(latitude, longitude, 'Mi ubicación', true);
-  
-                // Pintar la ruta desde tu empresa hacia la ubicación del cliente
-                this.mapService.drawRoute(this.empresaLat, this.empresaLng, latitude, longitude);
-              })
-              .catch(error => {
-                console.error('Error al obtener la ubicación:', error);
-              });
-          })
-          .catch(error => {
-            console.error('Error al cargar el mapa:', error);
-          });
-      })
-      .catch(error => {
-        console.error('Error al obtener la ubicación:', error);
-      });
-  }
 
   verimg(folder: string, image: string): string {
     return this._gs.verImagen(folder, image);
@@ -175,8 +229,12 @@ export class VerificarComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/home']);
   }
 
+  pintarNumerIva() {
+    this._cartSer.ivaNumber$.subscribe(ivaNumber => this.ivaNumberText = ivaNumber);
+  }
+
   getCarritoDetalle() {
-    this._cartSer.currentDataCart$.subscribe(listProd => { console.log('verificar productos', listProd); this.productos = listProd; });
+    this._cartSer.currentDataCart$.subscribe(listProd => { this.productos = listProd; });
   }
 
   totalGeneral() {
@@ -185,49 +243,72 @@ export class VerificarComponent implements OnInit, AfterViewInit {
     this._cartSer.totalGeneralPrice$.subscribe(totalGeneral => { this.totalGeneralPrice = totalGeneral; });
   }
 
-  getProvincias() {
-    this._vs.getProvincias().subscribe((data) => {
-      this.provincias = data.data;
-    });
-  }
 
   /* //talves ya no utilicemos
   onProvinciaChange() {
     const provinciaId = this.formVenta.get('provincia_id')?.value;
-
+  
     // Filtrar los cantones correspondientes a la provincia seleccionada
     const provincia = this.provincias.find(p => p.id === provinciaId);
-
+  
     this.cantones = provincia ? provincia.canton : [];
-
+  
     // Reiniciar el valor del campo canton_id y parroquia_id
     this.formVenta.patchValue({ canton_id: '', parroquia_id: '' });
   }
-
+  
   ////talves ya no utilicemos
   onCantonChange() {
     const cantonId = this.formVenta.get('canton_id')?.value;
-
+  
     // Filtrar las parroquias correspondientes al cantón seleccionado
     const canton = this.cantones.find(c => c.id === cantonId);
-
+  
     this.parroquias = canton ? canton.parroquia : [];
-
+  
     // Reiniciar el valor del campo parroquia_id
     this.formVenta.patchValue({ parroquia_id: '' });
   }
- */
+  */
 
   savePedido() {
     this.formVenta.markAllAsTouched();
-    if (this.formVenta.invalid) {
-      return;
-    }
+    if (this.formVenta.invalid) { return; }
 
     if (this.formVenta.valid) {
-      const form = this.formVenta.value;
-      console.log(form);
+      const detalle_venta: DetalleVenta[] = this.buildDetalleVenta();
+      const json = this.buildJson(detalle_venta);
+      console.log(json);
+      //creart servicio para enviar la data al backend
     }
+  }
+
+  private buildDetalleVenta(): DetalleVenta[] {
+    return this.productos.reduce((result: DetalleVenta[], detalle) => {
+
+      const detalleVenta: DetalleVenta = {
+        producto_id: detalle.producto ? detalle.producto.id : null,
+        servicio_id: detalle.servicio ? detalle.servicio.id : null,
+        cantidad: detalle.quantity!,
+        precio: detalle.producto! ? detalle.producto.precio_venta : detalle.servicio?.precio || null,
+        total: detalle.quantity! * (detalle.producto ? detalle.producto.precio_venta : detalle.servicio?.precio || 0),
+      };
+      result.push(detalleVenta);
+      return result;
+    }, []);
+  }
+
+  private buildJson(detalle_venta: DetalleVenta[]): { venta : Venta, venta_ubicacion: VentaUbicacion , detalle_venta : DetalleVenta[]} {
+    return { venta: this.buildVenta(), venta_ubicacion: this.buildVentaUbicacion(), detalle_venta: detalle_venta };
+  }
+
+  private buildVenta(): Venta {
+    return { cliente_id: this.formVenta.value.cliente_id, subtotal: this.subTotal, iva: this.iva, total: this.totalGeneralPrice };
+  }
+
+  private buildVentaUbicacion(): VentaUbicacion {
+    const form = this.formVenta.value;
+    return { provincia: form.provincia, canton: form.canton, parroquia: form.parroquia, latitud: form.latitud, longitud: form.longitud };
   }
 
 

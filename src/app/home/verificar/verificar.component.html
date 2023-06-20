@@ -22,7 +22,7 @@
           </ion-col>
           <ion-col size="6">
             <div class="ion-text-center">
-              <ion-chip style="margin-top: -4px;" (click)="obtenerUbicacion()" *ngIf="!ubicacion">
+              <ion-chip style="margin-top: -4px;" (click)="obtenerUbicacion()" *ngIf="ubicacion">
                 <ion-icon name="location-outline" color="primary"></ion-icon>
                 <ion-label>Mi Ubicación</ion-label>
               </ion-chip>
@@ -51,8 +51,8 @@
             </ion-row>
 
             <ion-row>
-              <ion-col size="6">
-                <ion-item *ngIf="ubicacion">
+              <ion-col size="6" sizeXs="12">
+                <ion-item *ngIf="formVenta.get('provincia')?.value">
                   <ion-input type="text" label="Provincia" labelPlacement="stacked" formControlName="provincia"
                     readonly></ion-input>
                 </ion-item>
@@ -63,8 +63,8 @@
                 </small>
               </ion-col>
 
-              <ion-col size="6">
-                <ion-item *ngIf="ubicacion">
+              <ion-col size="6 "sizeXs="12">
+                <ion-item *ngIf="formVenta.get('canton')?.value">
                   <ion-input type="text" label="Cantón" labelPlacement="stacked" formControlName="canton"
                     readonly></ion-input>
                 </ion-item>
@@ -73,7 +73,7 @@
 
             <ion-row>
               <ion-col size="12">
-                <ion-item *ngIf="ubicacion">
+                <ion-item *ngIf="formVenta.get('parroquia')?.value">
                   <ion-input type="text" label="Parroquia" labelPlacement="stacked" formControlName="parroquia"
                     readonly></ion-input>
                 </ion-item>
@@ -87,25 +87,25 @@
 
             <ion-row>
               <ion-col size="12">
-                <ion-item *ngIf="ubicacion">
+                <ion-item *ngIf="formVenta.get('coordenadas')?.value">
                   <ion-input style="font-size: 11px;" type="text" label="Ubicacion" labelPlacement="stacked"
                     formControlName="coordenadas" readonly></ion-input>
                 </ion-item>
 
-                <ion-item *ngIf="skeleton">
+                <!-- <ion-item *ngIf="skeleton">
                   <ion-label class="prompt-text" position="floating">
                     <ion-skeleton-text [animated]="true" style="width: 100%"></ion-skeleton-text>
                   </ion-label><br />
                   <ion-input class="prompt-text" type="text" readonly>
                     <ion-skeleton-text [animated]="true" style="width: 100%"></ion-skeleton-text>
                   </ion-input>
-                </ion-item>
+                </ion-item> -->
               </ion-col>
             </ion-row>
 
             <ion-row>
               <ion-col size="12">
-                <div [style.display]="ubicacion ? 'block' : 'none'" #mapContainer class="map-container"></div>
+                <div  #mapContainer class="map-container"></div>  <!-- [style.display]="ubicacion ? 'block' : 'none'" -->
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -181,7 +181,7 @@
                     </ion-row>
 
                     <ion-row style="width: 100%;line-height: inherit;text-align: left;">
-                      <ion-col colspan="4" class="centerCabecera">Iva (12%)</ion-col>
+                      <ion-col colspan="4" class="centerCabecera">Iva ({{ ivaNumberText }}%)</ion-col>
                       <ion-col colspan="4" class="centerCabecera"></ion-col>
                       <ion-col colspan="4" class="centerCabecera">{{ iva | currency : "USD" : "symbol" }}</ion-col>
                     </ion-row>
@@ -207,7 +207,7 @@
 
           <ion-row>
             <ion-col size="12" class="ion-text-center">
-              <ion-button expand="block" color="dark" routerLink="/home"> Seguir
+              <ion-button expand="block" color="dark"  (click)="regresar()"> Seguir
                 <ion-icon slot="end" name="cart"></ion-icon>
               </ion-button>
               <ion-button type="button" expand="block" color="primary" [disabled]="formVenta.invalid"

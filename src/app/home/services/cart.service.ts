@@ -118,11 +118,11 @@ export class CartService {
   }
 
   actualizarTotales(productoActual: DetalleVentaProductoOrServicio[]): void {
-    const subtotal = this.calcularSubtotal(productoActual);
+    const subtotal = Number(this.calcularSubtotal(productoActual).toFixed(2));
     this.mostrarIva().subscribe(() => {
       const ivaPorcentaje = Number((this.ivaNumberSubject.getValue() / 100).toFixed(2));
-      const iva = this.calcularIVA(subtotal, ivaPorcentaje);
-      const totalGeneral = subtotal + iva;
+      const iva = Number(this.calcularIVA(subtotal, ivaPorcentaje).toFixed(2));
+      const totalGeneral = Number((subtotal + iva).toFixed(2));
       this.subtotalSubject.next(subtotal);
       this.ivaSubject.next(iva);
       this.totalPriceSubject.next(totalGeneral);
