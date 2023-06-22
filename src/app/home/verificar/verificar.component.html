@@ -210,7 +210,7 @@
               <ion-button expand="block" color="dark"  (click)="regresar()"> Seguir
                 <ion-icon slot="end" name="cart"></ion-icon>
               </ion-button>
-              <ion-button type="button" expand="block" color="primary" [disabled]="formVenta.invalid"
+              <ion-button type="button" expand="block" color="primary" [disabled]="formVenta.invalid || productos.length == 0"
                 (click)="savePedido()"> Guardar Pedido
                 <ion-icon slot="end" name="save"></ion-icon>
               </ion-button>

@@ -34,8 +34,8 @@ export class MapService {
   empresaLat: number = -2.1596032;
   empresaLng: number = -79.8957842;
 
-  galapagosLat : number = -0.7392; // Latitud de las Islas Galápagos
-  galapagosLng : number = -90.2656; // Longitud de las Islas Galápagos
+  galapagosLat: number = -0.7392; // Latitud de las Islas Galápagos
+  galapagosLng: number = -90.2656; // Longitud de las Islas Galápagos
 
   apiKeyGoogleMap = environment.apiKeyGoogleMap;
 
@@ -72,7 +72,7 @@ export class MapService {
         if (typeof google !== 'undefined') {
           console.log('Google está cargado');
         } else {
-          console.log('Google no está definido'); 
+          console.log('Google no está definido');
         }
         observer.next(true);
         observer.complete();
@@ -92,7 +92,7 @@ export class MapService {
     });
   }
 
-  initializeMap(mapElement: HTMLElement, zoom: number = 15){
+  initializeMap(mapElement: HTMLElement, zoom: number = 15) {
     const mapOptions = { center: new google.maps.LatLng(this.empresaLat, this.empresaLng), zoom: zoom, disableDefaultUI: true, clickableIcons: false };
     this.map = new google.maps.Map(mapElement, mapOptions);
     this.clearRoute();
@@ -147,87 +147,87 @@ export class MapService {
     if (this.map) {
       // Agregar un marcador al mapa utilizando la ubicación proporcionada
 
-        const markerOptions = { position: { lat, lng }, map: this.map, title: title, draggable: draggable };
-  
-        if (draggable) {
-          this.locationMarker = new google.maps.Marker(markerOptions);
-          this.locationMarker.addListener('dragend', (event: any) => {
-            console.log('moviendo sabras:)');
-            
-            const newPosition = event.latLng;
-            const newLat = newPosition.lat();
-            const newLng = newPosition.lng();
-  
-            // Validar la ubicación dentro de Ecuador
-            const geocoder = new google.maps.Geocoder();
-            const location = { lat: newLat, lng: newLng };
-  
-            geocoder.geocode({ location: location }, (results: any, status: any) => {
-              if (status === 'OK') {
-                // Verificar si la dirección pertenece a Ecuador
-                const country = results[0]?.address_components.find((component: any) => component.types.includes('country'))?.short_name;
-  
-                if (country === 'EC' || country === 'G') {
-                   // La ubicación es válida dentro de Ecuador o en las Islas Galápagos
+      const markerOptions = { position: { lat, lng }, map: this.map, title: title, draggable: draggable };
 
-                  if (country !== 'G') {
-                    // La ubicación es válida dentro de Ecuador
-                    // Realiza las operaciones necesarias con las nuevas coordenadas
-                    //this.clearRoute();
-                    //this.drawRoute(this.empresaLat, this.empresaLng, newLat, newLng);
-                    //this.addMarker(this.empresaLat, this.empresaLng, 'Mi ubicación', true);
-                    //this.setInfoWindow(this.locationMarker, 'Empresa', 'Vidanova');
+      if (draggable) {
+        this.locationMarker = new google.maps.Marker(markerOptions);
+        this.locationMarker.addListener('dragend', (event: any) => {
+          console.log('moviendo sabras:)');
 
-                    if (country === 'G') {
-                      // La ubicación es en las Islas Galápagos
-                      // Agregar marcador y ruta a las Islas Galápagos
-                      this.clearRoute();
-                      this.drawRoute(newLat, newLng, this.galapagosLat, this.galapagosLng);
-                      this.addMarker(this.galapagosLat, this.galapagosLng, 'Islas Galápagos');
-                    } else {
-                      // La ubicación es dentro de Ecuador continental
-                      // Agregar marcador y ruta a tu ubicación de empresa
-                      this.clearRoute();
-                      this.drawRoute(this.empresaLat, this.empresaLng, newLat, newLng);
-                      this.addMarker(this.empresaLat, this.empresaLng, 'Mi empresa',true);
-                    }
+          const newPosition = event.latLng;
+          const newLat = newPosition.lat();
+          const newLng = newPosition.lng();
 
-                    this.setInfoWindow(this.locationMarker, 'Empresa', 'Vidanova');
-    
-                    this.getProvinciaCantonParroquia(newLat, newLng)
-                      .then(nuevaUbicacion => {
-                        this.capturarUbicacion(nuevaUbicacion);
-                        this.capturarCoordenadas({ lat: newLat, lng: newLng });
-                      })
-                      .catch(error => {
-                        this._ats.toastAlert('Error al geocodificar la ubicación', 'danger', 'hand-right-outline');
-                        console.error('Error en la obtención de la ubicación:', error);
-                      });
-                  } else {
+          // Validar la ubicación dentro de Ecuador
+          const geocoder = new google.maps.Geocoder();
+          const location = { lat: newLat, lng: newLng };
+
+          geocoder.geocode({ location: location }, (results: any, status: any) => {
+            if (status === 'OK') {
+              // Verificar si la dirección pertenece a Ecuador
+              const country = results[0]?.address_components.find((component: any) => component.types.includes('country'))?.short_name;
+
+              if (country === 'EC' || country === 'G') {
+                // La ubicación es válida dentro de Ecuador o en las Islas Galápagos
+
+                if (country !== 'G') {
+                  // La ubicación es válida dentro de Ecuador
+                  // Realiza las operaciones necesarias con las nuevas coordenadas
+                  //this.clearRoute();
+                  //this.drawRoute(this.empresaLat, this.empresaLng, newLat, newLng);
+                  //this.addMarker(this.empresaLat, this.empresaLng, 'Mi ubicación', true);
+                  //this.setInfoWindow(this.locationMarker, 'Empresa', 'Vidanova');
+
+                  if (country === 'G') {
                     // La ubicación es en las Islas Galápagos
-                      this.mapLoadedSubject.next(true);
-                      this._ats.toastAlert('La ubicación seleccionada no es válida para envíos. Solo disponibles para Ecuador', 'danger', 'hand-right-outline');
-                      // Vaciar la ruta del mapa
-                      this.clearMap();
+                    // Agregar marcador y ruta a las Islas Galápagos
+                    this.clearRoute();
+                    this.drawRoute(newLat, newLng, this.galapagosLat, this.galapagosLng);
+                    this.addMarker(this.galapagosLat, this.galapagosLng, 'Islas Galápagos');
+                  } else {
+                    // La ubicación es dentro de Ecuador continental
+                    // Agregar marcador y ruta a tu ubicación de empresa
+                    this.clearRoute();
+                    this.drawRoute(this.empresaLat, this.empresaLng, newLat, newLng);
+                    this.addMarker(this.empresaLat, this.empresaLng, 'Mi empresa', true);
                   }
+
+                  this.setInfoWindow(this.locationMarker, 'Empresa', 'Vidanova');
+
+                  this.getProvinciaCantonParroquia(newLat, newLng)
+                    .then(nuevaUbicacion => {
+                      this.capturarUbicacion(nuevaUbicacion);
+                      this.capturarCoordenadas({ lat: newLat, lng: newLng });
+                    })
+                    .catch(error => {
+                      this._ats.toastAlert('Error al geocodificar la ubicación', 'danger', 'hand-right-outline');
+                      console.error('Error en la obtención de la ubicación:', error);
+                    });
                 } else {
-                  // La ubicación no pertenece a Ecuador
+                  // La ubicación es en las Islas Galápagos
                   this.mapLoadedSubject.next(true);
-                  this._ats.toastAlert('La ubicación seleccionada no es válida para envíos...! Solo disponibles para Ecuador', 'danger', 'hand-right-outline');
+                  this._ats.toastAlert('La ubicación seleccionada no es válida para envíos. Solo disponibles para Ecuador', 'danger', 'hand-right-outline');
                   // Vaciar la ruta del mapa
                   this.clearMap();
                 }
               } else {
-                this._ats.toastAlert('Error al geocodificar la ubicación', 'danger', 'hand-right-outline');
-                console.error('Error al geocodificar la ubicación:', status);
+                // La ubicación no pertenece a Ecuador
+                this.mapLoadedSubject.next(true);
+                this._ats.toastAlert('La ubicación seleccionada no es válida para envíos...! Solo disponibles para Ecuador', 'danger', 'hand-right-outline');
+                // Vaciar la ruta del mapa
+                this.clearMap();
               }
-            });
+            } else {
+              this._ats.toastAlert('Error al geocodificar la ubicación', 'danger', 'hand-right-outline');
+              console.error('Error al geocodificar la ubicación:', status);
+            }
           });
-        } else {
-          const marker = new google.maps.Marker(markerOptions);
-          this.markers.push(marker);
-          this.setInfoWindow(marker, 'Empresa', 'Vidanova');
-        }
+        });
+      } else {
+        const marker = new google.maps.Marker(markerOptions);
+        this.markers.push(marker);
+        this.setInfoWindow(marker, 'Empresa', 'Vidanova');
+      }
     }
   }
 
@@ -238,23 +238,20 @@ export class MapService {
     
   */
 
-  capturarUbicacion(nuevaUbicacion:{ provincia: string, canton: string, parroquia: string }){
+  capturarUbicacion(nuevaUbicacion: { provincia: string, canton: string, parroquia: string }) {
     this.ubicacionSubject.next(nuevaUbicacion);
   }
 
-  capturarCoordenadas(newCoordenadas : { lat: number, lng: number }){
+  capturarCoordenadas(newCoordenadas: { lat: number, lng: number }) {
     this.coordenadasSubject.next(newCoordenadas)
 
   }
 
   setInfoWindow(marker: any, title: string, subtitle: string) {
     const contentString = `
-      <div style="background-color: #ffffff; padding: 2px; border-radius: 5px; text-align: center;">
-        <p style="font-weight:bold; margin-bottom: 5px; font-size: 18px;">${title}</p>
-        <div>
-          <p class="m-0" style="font-size: 14px;">${subtitle}</p>
-        </div>
-      </div>`;
+    <div style="background-color: #ffffff; padding: 2px; border-radius: 5px;display: flex;justify-content: center;">
+      <p style="font-weight:bold; margin-bottom: 5px; font-size: 18px; text-align: center;padding: 5px;">${title} ${subtitle}</p>
+  </div>`;
 
     const infowindow = new google.maps.InfoWindow({ content: contentString, maxWidth: 250 });
 

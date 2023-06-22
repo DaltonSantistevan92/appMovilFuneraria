@@ -1,42 +1,15 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CartService, DetalleVentaProductoOrServicio } from '../services/cart.service';
-import { Producto } from '../interfaces/categoria-producto.interface';
-import { NavigationExtras, Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
 import { VerificarService } from '../services/verificar.service';
-import { Canton, Parroquia, Provincia } from '../interfaces/provincia.interface';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { User } from 'src/app/auth/interfaces/auth.interface';
 import { MapService } from '../services/map.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { GeneralService } from 'src/app/services/general.service';
-import { DOCUMENT } from '@angular/common';
-import { Position } from '@capacitor/geolocation';
-
-interface DetalleVenta {
-  producto_id: number | null;
-  servicio_id: number | null;
-  cantidad: number | null;
-  precio: number | null;
-  total: number | null;
-}
-
-interface Venta {
-  cliente_id: number;
-  subtotal: number;
-  iva: number;
-  total: number;
-}
-
-interface VentaUbicacion {
-  //provincia_id: number;
-  provincia: string;
-  canton: string;
-  parroquia: string;
-  latitud: number;
-  longitud: number;
-}
+import { DetalleVenta, Venta, VentaUbicacion } from './interfaces/pedido.interface';
+import { PedidoService } from './services/pedido.service';
 
 
 @Component({
@@ -75,8 +48,7 @@ export class VerificarComponent implements OnInit, AfterViewInit {
     private mapService: MapService,
     private _ats: AlertService,
     private _gs: GeneralService,
-    private renderer: Renderer2,
-    @Inject(DOCUMENT) private document: any,
+    private _ps: PedidoService
 
   ) { }
 
@@ -86,7 +58,7 @@ export class VerificarComponent implements OnInit, AfterViewInit {
     this.getCarritoDetalle();
     this.totalGeneral();
     this.pintarNumerIva();
-    console.log('ngOnInit');
+    //console.log('ngOnInit');
 
     this.mapService.coordenadas$.subscribe(coord => {
       //console.log('nueva coordenada', coord);
@@ -106,9 +78,9 @@ export class VerificarComponent implements OnInit, AfterViewInit {
     this.mapService.mapLoaded$.subscribe(verificando => {
       console.log('verificando mapLoaded', verificando);
       if (verificando) {
-         this.formVenta.patchValue({ provincia: '', canton: '', parroquia: '', coordenadas:'', latitud: '', longitud: '' });
+        this.formVenta.patchValue({ provincia: '', canton: '', parroquia: '', coordenadas: '', latitud: '', longitud: '' });
       }
-      
+
     })
 
   }
@@ -118,7 +90,7 @@ export class VerificarComponent implements OnInit, AfterViewInit {
   }
 
   ionViewWillEnter() {
-    console.log('ionViewWillEnter');
+    //console.log('ionViewWillEnter');
 
     this.getCarritoDetalle();
     this.totalGeneral();
@@ -280,7 +252,37 @@ export class VerificarComponent implements OnInit, AfterViewInit {
       const json = this.buildJson(detalle_venta);
       console.log(json);
       //creart servicio para enviar la data al backend
+      this.guardandoPedido(json);
     }
+  }
+
+  guardandoPedido(data: { venta: Venta, venta_ubicacion: VentaUbicacion, detalle_venta: DetalleVenta[] }) {
+    this._ps.savePedido(data).subscribe({
+      next: (resp) => {
+        if (resp.status) {
+          this._ats.toastAlert(resp.message);
+          this.resetPedido();
+        } else {
+          this._ats.toastAlertDanger(resp.message);
+        }
+      },
+      error: (err) => { console.log(err); },
+      complete: () => { this.router.navigate(['/home']) }
+    });
+  }
+
+  resetPedido() {
+    this.ubicacion = true;  //se activa el btn capturar ubicación
+    this.formVenta.get('provincia')?.setValue('');
+    this.formVenta.get('canton')?.setValue('');
+    this.formVenta.get('parroquia')?.setValue('');
+    this.formVenta.get('latitud')?.setValue('');
+    this.formVenta.get('longitud')?.setValue('');
+    this.formVenta.get('coordenadas')?.setValue('');
+
+    this._cartSer.vaciarCartDetalleVenta();
+    this._cartSer.vaciarTotalIvaSubtotal();
+    localStorage.removeItem('cart_funeraria');
   }
 
   private buildDetalleVenta(): DetalleVenta[] {
@@ -298,7 +300,7 @@ export class VerificarComponent implements OnInit, AfterViewInit {
     }, []);
   }
 
-  private buildJson(detalle_venta: DetalleVenta[]): { venta : Venta, venta_ubicacion: VentaUbicacion , detalle_venta : DetalleVenta[]} {
+  private buildJson(detalle_venta: DetalleVenta[]): { venta: Venta, venta_ubicacion: VentaUbicacion, detalle_venta: DetalleVenta[] } {
     return { venta: this.buildVenta(), venta_ubicacion: this.buildVentaUbicacion(), detalle_venta: detalle_venta };
   }
 

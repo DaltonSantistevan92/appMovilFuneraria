@@ -60,6 +60,16 @@ export class CartService {
     }
   }
 
+  vaciarCartDetalleVenta(): void {
+    this.cart.next([]);
+  }
+
+  vaciarTotalIvaSubtotal(): void {
+    this.totalPriceSubject.next(0);
+    this.subtotalSubject.next(0);
+    this.ivaSubject.next(0);
+  }
+
   cargarCart(pro: Producto | Servicio){
     const elementoCarrito: DetalleVentaProductoOrServicio = { quantity: pro.quantity! };
 

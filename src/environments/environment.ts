@@ -6,6 +6,9 @@ export const environment = {
   production: false,
   apiUrl: 'http://localhost:8000/api',
   apiKeyGoogleMap : 'AIzaSyAVV5xOoceapxCqNr9rFnCJS8wgKDvD_Nw'
+
+  //david : AIzaSyAki7ThD2vvQjrJ10RNV8bKZp_EgSDAwKQ  - AIzaSyAki7ThD2vvQjrJ10RNV8bKZp_EgSDAwKQ  AIzaSyAki7ThD2vvQjrJ10RNV8bKZp_EgSDAwKQ
+  //dalton : AIzaSyAVV5xOoceapxCqNr9rFnCJS8wgKDvD_Nw
 };
 
 /*
