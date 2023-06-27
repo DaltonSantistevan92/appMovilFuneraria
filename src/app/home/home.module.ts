@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HomePage } from './home.page';
@@ -21,6 +21,9 @@ import { NumerosCelularEcuadorDirective } from '../directives/numeros-celular-ec
 import { SoloLetrasDirective } from '../directives/solo-letras.directive';
 import { AlfaNumericoDirective } from '../directives/alfa-numerico.directive';
 import { VerificarComponent } from './verificar/verificar.component';
+import { PedidosComponent } from './pedidos/pedidos.component';
+import { PagosAfiliacionComponent } from './pagos-afiliacion/pagos-afiliacion.component';
+import { VerDetallePedidoComponent } from './pedidos/ver-detalle-pedido/ver-detalle-pedido.component';
 
 
 
@@ -43,12 +46,18 @@ import { VerificarComponent } from './verificar/verificar.component';
     AfiliateComponent,
     BannerPlanComponent,
     VerificarComponent,
+    PedidosComponent,
+    PagosAfiliacionComponent,
+    VerDetallePedidoComponent,
     CedulaDirective,
     SoloNumerosDirective,
     NumerosCelularEcuadorDirective,
     SoloLetrasDirective,
     AlfaNumericoDirective
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  providers: [
+    DatePipe
+  ]
 })
 export class HomePageModule {}

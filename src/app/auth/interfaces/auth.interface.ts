@@ -60,6 +60,7 @@ export interface Persona {
   direccion?: any;
   estado?: string;
   cliente?: Cliente[];
+  //repartidor? : Repartidor[];//por procesar
 }
 
 export interface Cliente {
@@ -68,7 +69,12 @@ export interface Cliente {
   estado: string;
 }
 
-
+// export interface Repartidor {
+//   id: number;
+//   persona_id: number;
+//   disponible : string;
+//   estado: string;
+// }
 //
 export interface IntCc {
     status: boolean;

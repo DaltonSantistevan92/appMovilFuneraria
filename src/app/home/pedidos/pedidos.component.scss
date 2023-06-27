@@ -1,0 +1,40 @@
+//
+
+.grid {
+    display: grid;
+    place-items: center;
+  
+    height: 50vh;
+    width: 100%;
+  
+    color: #333;
+  }
+
+  .grid__content {
+    text-align: center;
+    margin: auto;
+
+    div {
+        ion-icon{
+            font-size: 70px;
+        }
+
+    }
+
+    a{
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        color: #ecce49;
+    }
+  }
+
+
+  //
+
+  ion-item {
+    --padding-start: 0;
+  }
+
+
+

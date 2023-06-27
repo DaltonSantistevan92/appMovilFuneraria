@@ -1,0 +1,87 @@
+
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button size="small" (click)="regresar()">
+        <ion-icon slot="icon-only" name="arrow-undo-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      Pedidos
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <form [formGroup]="formPedido">
+    <input type="hidden" formControlName="cliente_id">
+    <ion-item>
+      <ion-icon style="padding: 10px;" name="calendar-outline"></ion-icon>
+      <ion-select formControlName="select_fecha" label="Fecha del pedido" [interfaceOptions]="customPopoverOptions" interface="popover" placeholder="Seleccione una fecha">
+        <ion-select-option value="15">Últimos 15 días</ion-select-option>
+        <ion-select-option value="1">Último mes</ion-select-option>
+        <ion-select-option value="6">Último 6 meses</ion-select-option>
+        <ion-select-option value="2023">2023</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-icon style="padding: 10px;" name="reader-outline"></ion-icon>
+      <ion-select formControlName="estado_id" label="Estado" [interfaceOptions]="customPopoverOptions2" interface="popover" placeholder="Seleccione un estado">
+        <ion-select-option *ngFor="let es of estados" [value]="es.id">{{ es.detalle | titlecase }}</ion-select-option>  
+      </ion-select>
+    </ion-item>
+  </form>
+
+  <ng-container *ngIf="verificacion">
+
+    <ion-item lines="none" style="padding: 10px;">
+      <ion-label [color]="statusDescription === 'pendiente' ? 'danger' : statusDescription === 'en proceso' ? 'warning' : statusDescription === 'entregado' ? 'success' : 'dark'">
+        <h2 style="font-style: italic; font-weight: bold; text-align: center; font-size: 20px;">{{ statusDescription | titlecase }}</h2>
+      </ion-label>
+    </ion-item>
+
+    <div style="margin-top: 5px;" *ngFor="let dp of dataPedido">
+      <ion-card>  
+        <ion-card-content>
+          <ion-list>
+            <ion-item lines="none">
+              <ion-icon 
+                [name]="statusDescription === 'pendiente' ? 'alert-outline' : statusDescription === 'en proceso' ? 'car-outline' : statusDescription === 'entregado' ? 'checkmark-outline' : 'close-circle-outline'"
+                size="large" 
+                [color]="statusDescription === 'pendiente' ? 'danger' : statusDescription === 'en proceso' ? 'warning' : statusDescription === 'entregado' ? 'success' : 'dark'">
+              </ion-icon>
+              
+              <ion-card-header>
+                <p style="text-align: center;">{{ diaFechaPersonalizada(dp.created_at) | titlecase }}</p>
+                <ion-card-title style="text-align: center;">{{ ubicacion(dp.venta_ubicacion[0]) | titlecase }} {{ dp.total | currency : 'USD' }} </ion-card-title>
+                <ion-card-subtitle style="cursor: pointer; text-align: center;" (click)="verDetallePedido(dp)">Ver Detalles</ion-card-subtitle>
+              </ion-card-header>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+
+  </ng-container>
+  
+
+  <ng-container *ngIf="!verificacion">
+    <div class="grid">
+      <div class="grid__content">
+        <img src="assets/img/vidanova.png" alt="">
+        <div class="ion-text-center" style="margin-top: 1rem;" *ngIf="!verificacion">
+          <ion-icon slot="icon-only" color="dark" name="bag-handle-outline"></ion-icon>
+        </div>
+            
+          <a (click)="regresar()" style="cursor: pointer">
+            Realiza tu primer pedido 
+            <ion-icon slot="icon-only" color="dark" name="cart-outline"></ion-icon>
+          </a>
+      </div>
+    </div>
+  </ng-container>
+</ion-content>

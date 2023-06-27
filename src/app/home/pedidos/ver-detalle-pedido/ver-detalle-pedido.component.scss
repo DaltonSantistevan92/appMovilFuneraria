@@ -1,0 +1,212 @@
+// .ticker-label {
+//     display: inline-block;
+//     padding: 5px 10px;
+//     border-radius: 20px;
+//     font-weight: bold;
+//     color: rgb(223, 32, 32);
+//     text-transform: uppercase;
+//   }
+
+
+// .ticker-wrapper {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   height: 40px;
+// }
+
+// .ticker-badge {
+//   font-size: 18px;
+//   padding: 8px 16px;
+//   border-radius: 20px;
+//   text-transform: uppercase;
+// }
+
+// .ticket-wrapper {
+//     background-color: #fff;
+//     border-radius: 8px;
+//     padding: 16px;
+//     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+//   }
+  
+//   .ticket-header {
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     margin-bottom: 16px;
+//   }
+  
+//   .ticket-title {
+//     font-size: 24px;
+//   }
+  
+//   .ticket-body {
+//     margin-bottom: 16px;
+//   }
+  
+//   .ticket-footer {
+//     display: flex;
+//     justify-content: flex-end;
+//   }
+  
+//   .ticket-status {
+//     font-weight: bold;
+//   }
+  
+
+// .ticket-content {
+//     background-color: #fff;
+//   }
+  
+//   .ticket-wrapper {
+//     border: 1px solid #000;
+//     border-radius: 5px;
+//     padding: 10px;
+//   }
+  
+  .ticket-header {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .ticker-badge {
+
+    //font-weight: bold;
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 20px;
+  }
+
+  .fs {
+    font-size: 13px;
+  }
+  
+//   .ticket-body {
+//     margin-top: 20px;
+//   }
+
+  
+  .ticket-item {
+    --inner-padding-end: 0;
+  }
+  
+  .ticket-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 3px;
+  }
+  
+//   .ticket-name {
+//     font-size: 12px;
+//   }
+  
+//   .ticket-price {
+//     font-size: 14px;
+//     margin-top: 14px;
+//   }
+  
+//   .ticket-total {
+//     font-size: 14px;
+//     margin-top: 14px;
+//     font-weight: bold;
+//   }
+
+
+
+.modal-wrapper {
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 10px;
+    // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: -25px;
+  }
+
+
+  .ticket-footer {
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 2px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .modal-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .modal-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .modal-body {
+    margin-bottom: 20px;
+  }
+  
+  .modal-info {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+  }
+  
+  .modal-footer {
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+  }
+  
+  .modal-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .modal-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .modal-label {
+    flex: 1;
+    font-size: 14px;
+    font-weight: bold;
+    color: #666;
+    text-transform: uppercase;
+  }
+  
+  .modal-item-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 3px;
+  }
+  
+  .modal-item-name {
+    flex: 1;
+    font-size: 14px;
+    color: #333;
+    margin-left: 10px;
+  }
+  
+  .modal-item-price,
+  .modal-item-total {
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .modal-subtotal,
+  .modal-tax,
+  .modal-total {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 10px;
+  }
+
+  .center{
+    display: flex;
+    justify-content: center;
+  }
+  
+  

@@ -6,18 +6,17 @@ import { CategoriaProductoComponent } from './categoria-producto/categoria-produ
 import { DetalleComponent } from './detalle/detalle.component';
 import { AfiliateComponent } from './afiliate/afiliate.component';
 import { VerificarComponent } from './verificar/verificar.component';
+import { PedidosComponent } from './pedidos/pedidos.component';
+import { PagosAfiliacionComponent } from './pagos-afiliacion/pagos-afiliacion.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: HomePage,
-    canActivate : [AuthGuard],
-  },
+  { path: '', component: HomePage,canActivate : [AuthGuard]},
   { path : 'categoria', component : CategoriaProductoComponent,  canActivate : [AuthGuard]},
   { path : 'detalle', component : DetalleComponent,  canActivate : [AuthGuard]},
   { path : 'verificar', component : VerificarComponent,  canActivate : [AuthGuard]},
-  { path : 'afiliate', component : AfiliateComponent,  canActivate : [AuthGuard]}
-
+  { path : 'afiliate', component : AfiliateComponent,  canActivate : [AuthGuard]},
+  { path : 'pedidos', component : PedidosComponent,  canActivate : [AuthGuard]},
+  { path : 'pagos-afiliación', component : PagosAfiliacionComponent,  canActivate : [AuthGuard]},
 
 ];
 

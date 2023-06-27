@@ -1,0 +1,290 @@
+<!-- <ion-content>
+  <div class="ticker-wrapper">
+    <ion-badge class="ticker-badge">{{ pedido.estado.detalle }}</ion-badge>
+  </div>
+  <div class="ticket-body">
+
+    <p><strong>Serie:</strong> {{ pedido.serie }}</p>
+    <p><strong>Nombre del Cliente:</strong> {{ pedido.cliente.persona.nombres }}</p>
+    <p><strong>Fecha de Pedido:</strong> {{ pedido.created_at | date }}</p>
+
+  </div>
+
+    <div class="ticket-footer, ion-padding" style="margin-top: -30px;">
+      <ion-list>
+        <ion-item>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="3" class="ion-text-center">
+                <b style="font-size: 12px;">Producto / Servicio</b>
+              </ion-col>
+              <ion-col size="3" class="ion-text-center">
+                <b style="font-size: 12px;">Nombre</b>
+              </ion-col>
+              <ion-col size="3" class="ion-text-end">
+                <b style="font-size: 12px;">Precio</b>
+              </ion-col>
+              <ion-col size="3" class="ion-text-end">
+                <b style="font-size: 12px;">total</b>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      </ion-list>
+
+      <ion-item *ngFor="let p of pedido.detalle_venta" class="ion-text-wrap">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="3">
+              <ng-container *ngIf="p.producto">
+                <img [src]="verimg('productos', p.producto.imagen)" alt="{{ p.producto.nombre }}"
+                  style="border-radius: 3px;">
+              </ng-container>
+              <ng-container *ngIf="p.servicio">
+                <img [src]="verimg('servicios', p.servicio.imagen)" alt="{{ p.servicio.nombre }}"
+                  style="border-radius: 3px;">
+              </ng-container>
+            </ion-col>
+
+            <ion-col size="3">
+              <ng-container *ngIf="p.producto">
+                <b style="font-size: 12px;">{{ p.producto.nombre | titlecase }}</b>
+              </ng-container>
+              <ng-container *ngIf="p.servicio">
+                <b style="font-size: 12px;">{{ p.servicio.nombre | titlecase }}</b>
+              </ng-container>
+            </ion-col>
+
+            <ion-col size="3" class="ion-text-end" style="font-size: 14px; margin-top: 14px;">
+              <ng-container *ngIf="p.producto">
+                {{ p.producto.precio_venta | currency:'USD' }}
+              </ng-container>
+              <ng-container *ngIf="p.servicio">
+                {{ p.servicio.precio | currency:'USD' }}
+              </ng-container>
+            </ion-col>
+
+            <ion-col size="3" class="ion-text-end" style="font-size: 14px; margin-top: 14px;">
+              <ng-container *ngIf="p.producto">
+                {{ (p.cantidad * p.producto.precio_venta) | currency:'USD' }}
+              </ng-container>
+              <ng-container *ngIf="p.servicio">
+                {{ (p.cantidad * p.servicio.precio) | currency:'USD' }}
+              </ng-container>
+            </ion-col>
+
+
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+
+      <p><strong>subtotal:</strong> {{ pedido.subtotal }}</p>
+      <p><strong>iva (12%):</strong> {{ pedido.iva }}</p>
+      <p><strong>Total:</strong> {{ pedido.total }}</p>
+    </div>
+
+</ion-content> -->
+
+
+<!-- <ion-content class="ticket-content">
+  <div class="ticket-wrapper">
+    <div class="ticket-header">
+      <ion-badge class="ticker-badge">{{ pedido.estado.detalle }}</ion-badge>
+    </div>
+
+    <div class="ticket-body">
+      <p><strong>Serie:</strong> {{ pedido.serie }}</p>
+      <p><strong>Nombre del Cliente:</strong> {{ pedido.cliente.persona.nombres }}</p>
+      <p><strong>Fecha de Pedido:</strong> {{ pedido.created_at | date }}</p>
+    </div>
+
+    <div class="ticket-footer ion-padding">
+      <ion-list>
+        <ion-item class="ticket-item">
+          <ion-grid>
+            <ion-row>
+              <ion-col size="3" class="ion-text-center">
+                <b>Producto / Servicio</b>
+              </ion-col>
+              <ion-col size="3" class="ion-text-center">
+                <b>Nombre</b>
+              </ion-col>
+              <ion-col size="3" class="ion-text-end">
+                <b>Precio</b>
+              </ion-col>
+              <ion-col size="3" class="ion-text-end">
+                <b>Total</b>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      </ion-list>
+
+      <ion-item *ngFor="let p of pedido.detalle_venta" class="ticket-item">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="3">
+              <ng-container *ngIf="p.producto">
+                <img [src]="verimg('productos', p.producto.imagen)" alt="{{ p.producto.nombre }}" class="ticket-image">
+              </ng-container>
+              <ng-container *ngIf="p.servicio">
+                <img [src]="verimg('servicios', p.servicio.imagen)" alt="{{ p.servicio.nombre }}" class="ticket-image">
+              </ng-container>
+            </ion-col>
+
+            <ion-col size="3">
+              <ng-container *ngIf="p.producto">
+                <span class="ticket-name">{{ p.producto.nombre | titlecase }}</span>
+              </ng-container>
+              <ng-container *ngIf="p.servicio">
+                <span class="ticket-name">{{ p.servicio.nombre | titlecase }}</span>
+              </ng-container>
+            </ion-col>
+
+            <ion-col size="3" class="ion-text-end ticket-price">
+              <ng-container *ngIf="p.producto">
+                {{ p.producto.precio_venta | currency:'USD' }}
+              </ng-container>
+              <ng-container *ngIf="p.servicio">
+                {{ p.servicio.precio | currency:'USD' }}
+              </ng-container>
+            </ion-col>
+
+            <ion-col size="3" class="ion-text-end ticket-total">
+              <ng-container *ngIf="p.producto">
+                {{ (p.cantidad * p.producto.precio_venta) | currency:'USD' }}
+              </ng-container>
+              <ng-container *ngIf="p.servicio">
+                {{ (p.cantidad * p.servicio.precio) | currency:'USD' }}
+              </ng-container>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+
+      <p><strong>Subtotal:</strong> {{ pedido.subtotal }}</p>
+      <p><strong>IVA (12%):</strong> {{ pedido.iva }}</p>
+      <p><strong>Total:</strong> {{ pedido.total }}</p>
+    </div>
+  </div>
+</ion-content> -->
+
+<ion-content>
+  <div class="ion-text-end">
+		<ion-button (click)="close()" fill="clear" color="dark">
+			<ion-icon name="close" slot="start"></ion-icon>
+		</ion-button>
+	</div>
+  <div class="modal-wrapper">
+
+
+    <div class="ticket-header">
+
+      <ion-badge class="ticker-badge"  [color]="pedido.estado.detalle === 'pendiente' ? 'danger' : pedido.estado.detalle === 'en proceso' ? 'warning' : pedido.estado.detalle === 'entregado' ? 'success' : 'dark'">{{ pedido.estado.detalle | titlecase}}</ion-badge>
+    </div>
+
+    <div class="modal-body">
+      <p class="modal-info"><strong>Serie:</strong> {{ pedido.serie | uppercase}}</p>
+      <p class="modal-info"><strong>Nombre del Cliente:</strong> {{ pedido.cliente.persona.nombres | titlecase }} {{ pedido.cliente.persona.apellidos | titlecase }}</p>
+      <p class="modal-info"><strong>Fecha de Pedido:</strong> {{ pedido.created_at | date }}</p>
+      <p class="modal-info">
+        <strong>Ubicación:</strong> 
+        {{ pedido.venta_ubicacion[0].provincia.provincia | titlecase }} - {{ pedido.venta_ubicacion[0].canton | titlecase }} - {{ pedido.venta_ubicacion[0].parroquia | titlecase }}</p>
+    </div>
+
+
+    <div class="ticket-footer">
+
+      <ion-item class="ticket-item">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="2" class="ion-text-center fs">
+              <b>Img</b>
+            </ion-col>
+            <ion-col size="3" class="ion-text-center fs">
+              <b>Nombre</b>
+            </ion-col>
+            <ion-col size="1" class="ion-text-center fs">
+              <b>C</b>
+            </ion-col>
+            <ion-col size="3" class="ion-text-center fs">
+              <b>Precio</b>
+            </ion-col>
+            <ion-col size="3" class="ion-text-center fs">
+              <b>Total</b>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+
+      <ion-item *ngFor="let p of pedido.detalle_venta" class="ticket-item">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="2" class="ion-text-center fs">
+              <ng-container *ngIf="p.producto">
+                <img [src]="verimg('productos', p.producto.imagen)" alt="{{ p.producto.nombre }}" class="ticket-image">
+              </ng-container>
+              <ng-container *ngIf="p.servicio">
+                <img [src]="verimg('servicios', p.servicio.imagen)" alt="{{ p.servicio.nombre }}" class="ticket-image">
+              </ng-container>
+            </ion-col>
+
+            <ion-col size="3" class="ion-text-center fs">
+              <ng-container *ngIf="p.producto">
+                <span class="ticket-name">{{ p.producto.nombre | titlecase }}</span>
+              </ng-container>
+              <ng-container *ngIf="p.servicio">
+                <span class="ticket-name">{{ p.servicio.nombre | titlecase }}</span>
+              </ng-container>
+            </ion-col>
+
+            <ion-col size="1" class="ion-text-center fs ticket-price">
+              <ng-container *ngIf="p.producto">
+                {{ p.cantidad | number }}
+              </ng-container>
+              <ng-container *ngIf="p.servicio">
+                {{ p.cantidad | number }}
+              </ng-container>
+            </ion-col>
+
+            <ion-col size="3" class="ion-text-center fs ticket-price">
+              <ng-container *ngIf="p.producto">
+                {{ p.producto.precio_venta | currency:'USD' }}
+              </ng-container>
+              <ng-container *ngIf="p.servicio">
+                {{ p.servicio.precio | currency:'USD' }}
+              </ng-container>
+            </ion-col>
+
+            <ion-col size="3" class="ion-text-center fs ticket-total">
+              <ng-container *ngIf="p.producto">
+                {{ (p.cantidad * p.producto.precio_venta) | currency:'USD' }}
+              </ng-container>
+              <ng-container *ngIf="p.servicio">
+                {{ (p.cantidad * p.servicio.precio) | currency:'USD' }}
+              </ng-container>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+
+      <div class="center">
+        <ion-list lines="none">
+          <ion-item>
+            <p><strong>Subtotal:</strong> {{ pedido.subtotal | currency:'USD' }}</p>
+
+          </ion-item>
+          <ion-item>
+            <p><strong>Iva (12%):</strong> {{ pedido.iva | currency:'USD' }}</p>
+
+          </ion-item>
+          <ion-item>
+            <p><strong>Total:</strong> {{ pedido.total | currency:'USD' }}</p>
+          </ion-item>
+        </ion-list>
+      </div>
+
+    </div>
+  </div>
+
+</ion-content>
