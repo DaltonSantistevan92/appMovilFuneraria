@@ -73,7 +73,33 @@ export class PedidosComponent  implements OnInit {
         this.getPedidos(this.formPedido.get('cliente_id')?.value,estado_id,parseInt(this.formPedido.get('select_fecha')?.value));
       }
     });
+    
 
+  }
+
+  
+  ionViewDidEnter() {
+    this.initForm();
+    this.getEstados();
+    this.setCliente();
+
+    const estadoIdControl = this.formPedido.get('estado_id');
+    // Desactivar el segundo select al iniciar el componente
+    estadoIdControl?.disable();
+  
+    this.formPedido.get('select_fecha')?.valueChanges.subscribe(value => {
+      if (value) {
+        estadoIdControl?.enable();
+      } else {
+        estadoIdControl?.disable();
+      }
+    });
+
+    this.formPedido.get('estado_id')?.valueChanges.subscribe(estado_id => {
+      if (estado_id) {
+        this.getPedidos(this.formPedido.get('cliente_id')?.value,estado_id,parseInt(this.formPedido.get('select_fecha')?.value));
+      }
+    });
   }
 
   initForm(){
@@ -153,6 +179,8 @@ export class PedidosComponent  implements OnInit {
 
 
   regresar() {
+    this.formPedido.get('select_fecha')?.setValue('');
+    this.formPedido.get('estado_id')?.setValue('');
     this.router.navigate(['/home']);
   }
 

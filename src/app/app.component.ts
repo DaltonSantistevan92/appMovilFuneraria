@@ -15,4 +15,8 @@ export class AppComponent implements OnInit {
     this.menuController.enable(true);
   }
 
+  ionViewDidEnter() {
+    this.menuController.enable(true);
+  }
+
 }

@@ -53,9 +53,11 @@ export class HomePage implements OnInit,  AfterContentChecked {
     this.menuController.enable(true);
     this.getCategoryProduc();//
     this.getCategoryServic();
-    this.cantidad();
+    this.cantidad();  
+  }
 
-    
+  ionViewDidEnter() {
+    this.menuController.enable(true);
   }
 
   ngAfterContentChecked() {
