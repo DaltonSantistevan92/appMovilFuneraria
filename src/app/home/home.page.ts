@@ -66,7 +66,7 @@ export class HomePage implements OnInit,  AfterContentChecked {
     };
   }
 
-  getCategoryProduc(){//
+  getCategoryProduc(){// 
     this._cs.getCategoriaProducto().subscribe({
       next : (resp) => { 
         this.categorias = resp.data;

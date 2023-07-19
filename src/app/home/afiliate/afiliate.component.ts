@@ -169,9 +169,42 @@ export class AfiliateComponent implements OnInit, AfterContentInit {
     })
   }
 
-  mostrarServicioSoloPlan() {
-    this._afi.getServicioPlan().subscribe({
-      next: (resp) => { this.servicioSoloPlan = resp.data; },
+  // mostrarServicioSoloPlan() {
+  //   this._afi.getServicioPlan().subscribe({
+  //     next: (resp) => { 
+  //       const cliente_idGlobal = this.formAfilicacion.get('cliente_id')?.value;
+
+  //       //necesito el afiliado con su servicio_id
+
+
+  //       console.log('aqui esta mis servicio de solo plan',resp); 
+  //       this.servicioSoloPlan = resp.data; },
+  //     error: (err) => { console.log(err); }
+  //   })
+  // }
+
+  mostrarServicioSoloPlan(){
+    const cliente_idGlobal = this.formAfilicacion.get('cliente_id')?.value;
+
+    this._afi.verificacionAfiliacionReturnServicioSoloPlan(cliente_idGlobal).subscribe({
+      next: (resp) => { 
+        if (resp.status) {
+          if (resp.data.length > 0) {
+            //console.log('aqui esta mis servicio que no ah elegido',resp); 
+            this.servicioSoloPlan = resp.data;
+          } else {
+            this._ats.toastAlertWarning(
+              `ya tienes todos los servicios adquiridos`,
+              'warning',
+              'warning-outline'
+            );  
+          }
+        } else {
+          //console.log('no tiene servicio de afiliacion retorna todos los servicio de tipo plan',resp); 
+          this.servicioSoloPlan = resp.data;
+
+        }
+      },
       error: (err) => { console.log(err); }
     })
   }
@@ -185,7 +218,7 @@ export class AfiliateComponent implements OnInit, AfterContentInit {
 
   changePrecioServicioPlanCostoMensual() {
     this.formAfilicacion.get('servicio_id')?.valueChanges.subscribe(servicioId => {
-      console.log('servicio_id',servicioId);
+      //console.log('servicio_id',servicioId);
       
       const precio = this.getPrecioServicio(servicioId);
       const nombreServicio = this.getNombreServicio(servicioId);
@@ -357,6 +390,34 @@ export class AfiliateComponent implements OnInit, AfterContentInit {
 
   regresar() {
     this.router.navigate(['/home']);
+  }
+
+  adquirirOtroPlanDelAfiliado(){
+    this.verificacionAfiliacion = true;//cambiamos que otra vez se afilie pero ya esta validado el el backend que no se add de nuevo
+
+    const cliente_idGlobal = this.formAfilicacion.get('cliente_id')?.value;
+
+    this._afi.verificacionAfiliacion(cliente_idGlobal).subscribe({
+      next: (resp) => {
+        if (resp.afiliado === false) {//si tiene afilicacion
+          this.iconoResp = resp.icono;
+          this.colorResp = resp.color;
+          this.verificacionAfiliacion = false;
+          this.mensajeVerificacion = resp.message;
+          
+        } else {   //no tiene afiliacion
+          this.verificacionAfiliacion = true;
+          this.mensajeVerificacion = resp.message;
+          this.iconoResp = resp.icono;
+          this.colorResp = resp.color;
+          this.mostrarEstadoCivil();
+          this.mostrarParentesco();
+          this.mostrarServicioSoloPlan();
+          this.mostrarDuracionMes();
+        }
+      },
+      error: (err) => { console.log(err); }
+    });
   }
 
 

@@ -1,3 +1,35 @@
-<p>
-  pagos-afiliacion works!
-</p>
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button size="small" (click)="regresar()">
+        <ion-icon slot="icon-only" name="arrow-undo-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+     Pagos De Afiliación
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-margin">
+  <ion-grid class="ion-margin">
+    <ion-row>
+      <ion-col>Acción</ion-col>
+      <ion-col>Servicio</ion-col>
+      <ion-col>Letras Pendientes</ion-col>
+      <ion-col>Letras Pagadas</ion-col>
+    </ion-row>
+    <ion-row *ngFor="let student of students; index as i">
+      <ion-col><ion-icon size="large" name="reader-outline" (click)="irDetalle()"></ion-icon></ion-col>
+      <ion-col>{{ student.name }}</ion-col>
+      <ion-col>{{ student.gender }}</ion-col>
+      <ion-col>{{ student.country }}</ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- <ion-item lines="none">
+    <ion-button color="primary" size="small" slot="end">
+      Material Design Table
+    </ion-button>
+  </ion-item> -->
+</ion-content>

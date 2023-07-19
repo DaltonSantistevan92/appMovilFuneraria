@@ -1,6 +1,6 @@
 
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-button size="small" (click)="regresar()">
         <ion-icon slot="icon-only" name="arrow-undo-outline"></ion-icon>
@@ -70,6 +70,11 @@
   
 
   <ng-container *ngIf="!verificacion">
+    <ion-item lines="none"  *ngIf="msg">
+      <ion-label style="padding: 5px;" color="danger"> {{ msg | titlecase }}</ion-label>
+      <!-- <span style="padding: 5px;">No hay pedidos {{ msg | titlecase }}</span> -->
+    </ion-item>
+     
     <div class="grid">
       <div class="grid__content">
         <img src="assets/img/vidanova.png" alt="">

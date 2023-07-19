@@ -50,6 +50,11 @@ export class AfiliateService {
     return this.http.get<{afiliado: boolean; message: string; icono: string; color : string}>(url);
   }
 
+  verificacionAfiliacionReturnServicioSoloPlan(cliente_id: number): Observable<IntSerPlan>{
+    const url = `${this.api}/verificacionAfiliacionReturnServicioSoloPlan/${cliente_id}`;
+    return this.http.get<IntSerPlan>(url);
+  }
+
   saveAfiliacion(data: AfiliacionData): Observable<RespLogin> {
     const url = `${this.api}/guardarAfiliado`;
     return this.http.post<RespLogin>(url,data).pipe(tap((resp) => {

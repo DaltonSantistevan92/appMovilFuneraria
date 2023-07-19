@@ -1,5 +1,5 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-button size="small" (click)="regresar()">
         <ion-icon slot="icon-only" name="arrow-undo-outline"></ion-icon>
@@ -13,7 +13,7 @@
 </ion-header>
 
 <ion-content>
-  <ng-container *ngIf="verificacionAfiliacion">
+  <ng-container *ngIf="verificacionAfiliacion; else noVerificacion">
     <form [formGroup]="formAfilicacion">
       <ion-accordion-group [value]="['first']">
         <ion-accordion value="first">
@@ -310,7 +310,7 @@
               </ng-container>
               <ng-template #NoData>
                 <strong style="color:red">
-                  Seleccione al menos servicio para registrar la afiliación
+                  Seleccione al menos un servicio para registrar la afiliación
                 </strong>
               </ng-template>
 
@@ -326,20 +326,21 @@
     </form>
   </ng-container>
 
-  <ng-container *ngIf="!verificacionAfiliacion">
-		<div class="grid">
-			<div class="grid__content">
-				<div class="ion-text-center" *ngIf="!verificacionAfiliacion">
-          <ion-icon slot="icon-only" [color]="colorResp" [name]="iconoResp"></ion-icon>
-				</div>
+  <ng-template #noVerificacion>
+    <ng-container *ngIf="!verificacionAfiliacion">
+      <div class="grid">
+        <div class="grid__content">
+          <div class="ion-text-center" *ngIf="!verificacionAfiliacion">
+            <ion-icon slot="icon-only" [color]="colorResp" [name]="iconoResp"></ion-icon>
+          </div>
+          <a>{{ mensajeVerificacion | uppercase }}</a>
+        </div>
+        <ion-button fill="outline" (click)="adquirirOtroPlanDelAfiliado()">Adquirir Otro Plan</ion-button>
+      </div>  
+    </ng-container>
+  </ng-template>
+  
 
-
-				<a>{{ mensajeVerificacion | uppercase }}</a>
-				
-			</div>
-		</div>
-
-		  
-	</ng-container>
+  <!--  -->
 
 </ion-content>

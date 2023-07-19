@@ -39,6 +39,8 @@ export class PedidosComponent  implements OnInit {
 
   pipe = new DatePipe('es-EC');
 
+  msg : string = '';
+
 
 
   constructor(
@@ -82,6 +84,8 @@ export class PedidosComponent  implements OnInit {
     this.initForm();
     this.getEstados();
     this.setCliente();
+
+    this.msg = '';
 
     const estadoIdControl = this.formPedido.get('estado_id');
     // Desactivar el segundo select al iniciar el componente
@@ -140,12 +144,16 @@ export class PedidosComponent  implements OnInit {
   getPedidos(cliente_id: number, estado_id: number, select_fecha_id : number){
     this._ps.verPedidos(cliente_id,estado_id,select_fecha_id).subscribe({
       next : (resp) => {
+      
         if (resp.status) {
           this.verificacion = true;
           this.dataPedido = resp.data; 
           this.statusDescription = resp.estado;
         } else {
           this.verificacion = false;
+          const estado = this.estados.find((e) => e.id === estado_id);
+      
+          this.msg = `No hay pedidos ${estado!.detalle}`;;
         }
       },
       error : (err) => {
@@ -153,6 +161,9 @@ export class PedidosComponent  implements OnInit {
       }
     })
   }
+
+
+
 
   diaFechaPersonalizada(created_at : string){
     const fechaFormateada = this.pipe.transform(created_at, 'EEEE. dd/MM/yyyy');
@@ -179,6 +190,7 @@ export class PedidosComponent  implements OnInit {
 
 
   regresar() {
+    this.msg = '';
     this.formPedido.get('select_fecha')?.setValue('');
     this.formPedido.get('estado_id')?.setValue('');
     this.router.navigate(['/home']);
