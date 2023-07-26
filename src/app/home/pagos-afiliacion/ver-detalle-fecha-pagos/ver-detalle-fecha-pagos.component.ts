@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
+import { ResponseAfiliado } from '../interfaces/pagos-afiliados.interface';
 
 @Component({
   selector: 'app-ver-detalle-fecha-pagos',
@@ -7,21 +10,24 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   styleUrls: ['./ver-detalle-fecha-pagos.component.scss'],
 })
 export class VerDetalleFechaPagosComponent  implements OnInit {
-  formPagosAfiliacion!: FormGroup;
+  
+  @Input() afiliadoResponse!: ResponseAfiliado;
+  
 
   constructor(
     private fb: FormBuilder,
-
+    private modalCtrl: ModalController,
+    private router :Router
   ) { }
 
   ngOnInit() {
-    this.formInit();
+    console.log('llego la data',this.afiliadoResponse);
   }
 
-  formInit() {
-    this.formPagosAfiliacion = this.fb.group({
-      cliente_id : [''],
-    });
+
+  close(){
+    this.modalCtrl.dismiss();
+    this.router.navigate(['/home/pagos-afiliación']);
   }
 
 }

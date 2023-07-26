@@ -11,19 +11,20 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-margin">
+<ion-content class="ion-margin" *ngIf="afiliadoResponse.length > 0">
   <ion-grid class="ion-margin">
     <ion-row>
-      <ion-col>Acción</ion-col>
-      <ion-col>Servicio</ion-col>
-      <ion-col>Letras Pendientes</ion-col>
-      <ion-col>Letras Pagadas</ion-col>
+      <ion-col size="3">Acción</ion-col>
+      <ion-col size="3">Servicio</ion-col>
+      <ion-col size="3">Letras Pendientes</ion-col>
+      <ion-col size="3">Detalle</ion-col>
+
     </ion-row>
-    <ion-row *ngFor="let student of students; index as i">
-      <ion-col><ion-icon size="large" name="reader-outline" (click)="irDetalle()"></ion-icon></ion-col>
-      <ion-col>{{ student.name }}</ion-col>
-      <ion-col>{{ student.gender }}</ion-col>
-      <ion-col>{{ student.country }}</ion-col>
+    <ion-row *ngFor="let af of afiliadoResponse; index as i">
+      <ion-col size="3"><ion-icon size="large" name="reader-outline" style="cursor: pointer;" (click)="irDetalle(af)"></ion-icon></ion-col>
+      <ion-col size="3">{{ af.servicio | titlecase }}</ion-col>
+      <ion-col size="3">{{ af.letras_pendientes }}</ion-col>
+      <ion-col size="3">{{ af.letras_pendientes === '0' ? 'Pagado' : 'Por Pagar' }} </ion-col>
     </ion-row>
   </ion-grid>
 

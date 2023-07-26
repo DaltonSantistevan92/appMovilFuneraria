@@ -5,8 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HomePage } from './home.page';
 
 import { HomePageRoutingModule } from './home-routing.module';
-import { NewDirectiveModule } from '../new-directive/new-directive.module';//sin utilizar
-
 import { BannerComponent } from './banner/banner.component';
 import { CategoriaProductoComponent } from './categoria-producto/categoria-producto.component';
 import { DetalleComponent } from './detalle/detalle.component';
@@ -24,6 +22,7 @@ import { VerificarComponent } from './verificar/verificar.component';
 import { PedidosComponent } from './pedidos/pedidos.component';
 import { PagosAfiliacionComponent } from './pagos-afiliacion/pagos-afiliacion.component';
 import { VerDetallePedidoComponent } from './pedidos/ver-detalle-pedido/ver-detalle-pedido.component';
+import { VerDetalleFechaPagosComponent } from './pagos-afiliacion/ver-detalle-fecha-pagos/ver-detalle-fecha-pagos.component';
 
 
 
@@ -34,7 +33,6 @@ import { VerDetallePedidoComponent } from './pedidos/ver-detalle-pedido/ver-deta
     ReactiveFormsModule,
     IonicModule,
     HomePageRoutingModule,
-    NewDirectiveModule,
     AuthModule,//utilizo la directiva 
     
   ],
@@ -53,7 +51,8 @@ import { VerDetallePedidoComponent } from './pedidos/ver-detalle-pedido/ver-deta
     SoloNumerosDirective,
     NumerosCelularEcuadorDirective,
     SoloLetrasDirective,
-    AlfaNumericoDirective
+    AlfaNumericoDirective,
+    VerDetalleFechaPagosComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
